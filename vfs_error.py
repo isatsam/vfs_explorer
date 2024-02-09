@@ -1,0 +1,2 @@
+class VfsError(Exception):
+    pass
