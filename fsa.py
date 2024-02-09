@@ -11,11 +11,9 @@ def select_archive(filepath):
                 vfs = Vfs(filepath)
                 return vfs
             else:
-                print("Not a VFS contents")
-                return None
+                raise TypeError("Not a VFS contents")
     else:
-        print("File doesn't exist")
-        return None
+        raise FileNotFoundError("File doesn't exist")
 
 
 if __name__ == "__main__":
@@ -26,7 +24,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.archive:
-        archive = select_archive(args.archive)
+        try:
+            archive = select_archive(args.archive)
+        except (TypeError, FileNotFoundError) as er:
+            print(f"Error opening VFS archive: {er}")
+            quit()
+
         if not args.search and not args.extract:
             print(f"{archive.filepath}\nFiles: {archive.num_files}\nSubdirectories: {archive.num_subdirs}")
             for subdir in archive.subdirs:
