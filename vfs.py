@@ -36,7 +36,7 @@ class Vfs(Directory):
                 else:
                     raise VfsError('File is not a VFS archive')
         else:
-            raise VfsError('File doesn\'t exist')
+            raise FileNotFoundError('File doesn\'t exist')
 
     def read_root_header(self):
         self.contents.seek(4)

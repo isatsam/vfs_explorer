@@ -1,19 +1,7 @@
-import os
 import argparse as arg
 import config
 from vfs import Vfs
-
-
-def select_archive(filepath):
-    if os.path.isfile(filepath):
-        with open(filepath, 'rb') as file:
-            if file.read(4) == b'LP1C':
-                vfs = Vfs(filepath)
-                return vfs
-            else:
-                raise TypeError("Not a VFS contents")
-    else:
-        raise FileNotFoundError("File doesn't exist")
+from vfs_error import VfsError
 
 
 if __name__ == "__main__":
@@ -25,8 +13,8 @@ if __name__ == "__main__":
 
     if args.archive:
         try:
-            archive = select_archive(args.archive)
-        except (TypeError, FileNotFoundError) as er:
+            archive = Vfs(args.archive)
+        except (VfsError, FileNotFoundError) as er:
             print(f"Error opening VFS archive: {er}")
             quit()
 
@@ -35,7 +23,7 @@ if __name__ == "__main__":
             for subdir in archive.subdirs:
                 print(f"Files in subdir \"{subdir.name}\": {subdir.num_files}")
     else:
-        print('Can\'t do anything without a VFS contents')
+        print('Can\'t do anything without a VFS archive')
         quit()
 
     if args.search:
