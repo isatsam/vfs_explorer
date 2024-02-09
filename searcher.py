@@ -6,7 +6,7 @@ from vfs import Vfs
 class Searcher:
     # TODO: iterating over files here is a bit of a cursed idea
     @staticmethod
-    def search(archive: Vfs, request: str = "", results=None, mode="print"):
+    def search(archive: Vfs, request: str = "", results=None):
         """
         returns results in such format:
         [ printable_name, found_object ]
@@ -43,13 +43,5 @@ class Searcher:
         results = look_in_directory(archive, request, results)
         if not results:
             raise FileNotFoundError
-
-        if mode == "print":
-            for file in results:
-                print(f"{file[0]}     {file[1].file_type_full_name}")
-        elif mode == "to_file":
-            with open('search_results.txt', 'w+') as f:
-                for line in results:
-                    f.write(f"{line}\n")
 
         return results

@@ -39,7 +39,9 @@ if __name__ == "__main__":
         quit()
 
     if args.search:
-        config.search.search(archive, args.search, mode='print')
+        results = config.search.search(archive, args.search)
+        for file in results:
+            print(f"{file[0]}")
 
     if args.extract:
         config.unpack.unpack(archive, args.extract)
