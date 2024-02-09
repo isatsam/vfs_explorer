@@ -41,12 +41,12 @@ class Searcher:
         if not results:
             results = []
         results = look_in_directory(archive, request, results)
-        if results is None:
-            return
+        if not results:
+            raise FileNotFoundError
 
         if mode == "print":
             for file in results:
-                print(file[0])
+                print(f"{file[0]}     {file[1].file_type_full_name}")
         elif mode == "to_file":
             with open('search_results.txt', 'w+') as f:
                 for line in results:

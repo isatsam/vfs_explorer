@@ -6,7 +6,7 @@ from embedded_file import EmbeddedFile
 
 class Unpacker:
     @staticmethod
-    def unpack(self, archive: Vfs, required: str or EmbeddedFile = ""):
+    def unpack(archive: Vfs, required: str or EmbeddedFile = ""):
         # TODO: Obv not compatible with a GUI but i don't know how to solve this yet
         def prompt_user_cli(files):
             print(f"Select which of the files to extract:")
@@ -19,9 +19,9 @@ class Unpacker:
         file = []
 
         try:
-            file = config.index.search(archive, required, file)
+            file = config.search.search(archive, required, file)
         except FileNotFoundError:
-            print(f"{file} not found in contents")
+            print(f"{required} not found in contents")
             exit()
 
         if type(file) is list:
