@@ -1,7 +1,7 @@
 import argparse as arg
-import config
-from vfs import Vfs
-from vfs_error import VfsError
+from plaguevfs import config
+from plaguevfs.vfs import Vfs
+from plaguevfs.vfs_error import VfsError
 
 
 if __name__ == "__main__":
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     if args.search:
         results = config.search.search(archive, args.search)
         for file in results:
-            print(f"{file[0]}")
+            print(f"{file[0]}     type: {file[1].file_type_full_name}")
 
     if args.extract:
         config.unpack.unpack(archive, args.extract)
