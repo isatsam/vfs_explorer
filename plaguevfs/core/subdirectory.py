@@ -1,7 +1,7 @@
 import struct
 import codecs
-from directory import Directory
-from embedded_file import EmbeddedFile
+from plaguevfs.core.directory import Directory
+from plaguevfs.core.embedded_file import EmbeddedFile
 
 
 class Subdirectory(Directory):

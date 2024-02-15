@@ -1,7 +1,7 @@
 import codecs
 import config
-from vfs import Vfs
-from embedded_file import EmbeddedFile
+from plaguevfs.core.vfs import Vfs
+from plaguevfs.core.embedded_file import EmbeddedFile
 
 
 class Unpacker:

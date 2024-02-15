@@ -1,6 +1,6 @@
 import codecs
 import config
-from vfs import Vfs
+from plaguevfs.core.vfs import Vfs
 
 
 class Searcher:

@@ -1,8 +1,8 @@
 import codecs
-from directory import Directory
-from vfs import Vfs
-from embedded_file import EmbeddedFile
-from subdirectory import Subdirectory
+from plaguevfs.core.directory import Directory
+from plaguevfs.core.vfs import Vfs
+from plaguevfs.core.embedded_file import EmbeddedFile
+from plaguevfs.core.subdirectory import Subdirectory
 
 
 class Indexer:

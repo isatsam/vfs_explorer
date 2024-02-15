@@ -1,7 +1,7 @@
 import struct
 import os
-from directory import Directory
-from vfs_error import VfsError
+from plaguevfs.core.directory import Directory
+from plaguevfs.core.vfs_error import VfsError
 
 """
 VFS header:

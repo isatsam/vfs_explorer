@@ -1,7 +1,7 @@
 import argparse as arg
-from plaguevfs import config
-from plaguevfs.vfs import Vfs
-from plaguevfs.vfs_error import VfsError
+from core import config
+from plaguevfs.core.vfs import Vfs
+from plaguevfs.core.vfs_error import VfsError
 
 
 if __name__ == "__main__":
