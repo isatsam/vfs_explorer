@@ -1,7 +1,7 @@
 import struct
 import os
-from .directory import Directory
-from .vfs_error import VfsError
+from plaguevfs.core.directory import Directory
+from plaguevfs.core.vfs_error import VfsError
 
 """
 VFS header:
@@ -36,7 +36,7 @@ class Vfs(Directory):
                 else:
                     raise VfsError('File is not a VFS archive')
         else:
-            raise FileNotFoundError(f'{self.filepath} doesn\'t exist')
+            raise FileNotFoundError('File doesn\'t exist')
 
     def read_root_header(self):
         self.contents.seek(4)
