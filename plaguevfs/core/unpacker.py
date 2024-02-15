@@ -1,8 +1,7 @@
 import codecs
-import os
-from .vfs import Vfs
-from .embedded_file import EmbeddedFile
-from .searcher import Searcher
+import config
+from plaguevfs.core.vfs import Vfs
+from plaguevfs.core.embedded_file import EmbeddedFile
 
 
 class Unpacker:
@@ -19,11 +18,11 @@ class Unpacker:
 
         file = []
 
-        if os.path.isfile(required):
-            temp_searcher = Searcher()
-            file = temp_searcher.search(archive, required, file)
-        else:
-            raise FileNotFoundError(f"{required} not found in contents")
+        try:
+            file = config.search.search(archive, required, file)
+        except FileNotFoundError:
+            print(f"{required} not found in contents")
+            exit()
 
         if type(file) is list:
             if len(file) > 1:
