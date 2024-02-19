@@ -29,7 +29,7 @@ if __name__ == "__main__":
     if args.search:
         results = config.search.search(archive, args.search)
         for file in results:
-            print(f"{file[0]}     type: {file[1].file_type_full_name}")
+            print(f"{file[0]}     type: {file[1].file_type}")
 
     if args.extract:
         config.unpack.unpack(archive, args.extract)
