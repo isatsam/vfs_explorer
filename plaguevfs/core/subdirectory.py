@@ -29,8 +29,10 @@ class Subdirectory(Directory):
         return [subdir_name, subdir_subdir_num, subdir_files_num]
 
     def find_end(self, byte_section):
+        return_to_position = byte_section.tell()
         for num in range(self.num_subdirs):
             Subdirectory(byte_section, self.name)
         for num in range(self.num_files):
             EmbeddedFile(byte_section=byte_section)
+        byte_section.seek(return_to_position)
         return byte_section.tell()
