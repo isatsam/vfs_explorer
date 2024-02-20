@@ -1,6 +1,6 @@
 import codecs
-import config
-from plaguevfs.core.vfs import Vfs
+from .indexer import Indexer
+from .vfs import Vfs
 
 
 class Searcher:
@@ -12,7 +12,8 @@ class Searcher:
         [ printable_name, found_object ]
         """
         if not archive.files:
-            config.index.index(archive)
+            temp_index = Indexer()
+            temp_index.index(archive)
         if not archive.files:
             return []
 
