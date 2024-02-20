@@ -18,7 +18,8 @@ class Vfs(Directory):
     """
     def __init__(self, filepath):
         self.filepath = filepath
-        self.name = filepath[:filepath.rfind('.vfs')]
+        self.name = os.path.basename(filepath)
+        print(self.name)
         self.parent = None
         try:
             self.contents = self.open()
