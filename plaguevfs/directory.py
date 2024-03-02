@@ -20,7 +20,7 @@ class Directory:
     def get_files_and_subdirs(self):
         def index_directory(directory):
             # Return to the beginning of the directory in the buffer since we're going to be iterating over files
-            directory.contents.seek(directory.start+directory.header_len)
+            directory.contents.seek(directory.start + directory.header_len)
             files_in_dir = {}
             for i in range(directory.num_files):
                 found_file = EmbeddedFile(parent=directory)
@@ -48,16 +48,12 @@ class Directory:
             for item in directory.files.keys():
                 if search_for in directory.files[item].name.lower():
                     if directory.parent is None:
-                        found.append([
-                            codecs.decode(directory.files[item].name, directory.encoding),
+                        found[directory.files[item].name.decode(directory.encoding)] = \
                             directory.files[item]
-                        ])
                     else:
-                        found.append([
-                            directory.files[item].parent.name + '/' +
-                            codecs.decode(directory.files[item].name, directory.encoding),
+                        found[directory.files[item].parent.name + '/' + \
+                              directory.files[item].name.decode(directory.encoding)] = \
                             directory.files[item]
-                        ])
             for subdir in directory.subdirs:
                 look_in_directory(subdir, search_for, found)
             return found
@@ -65,7 +61,7 @@ class Directory:
         if type(request) is not bytes:
             request = codecs.encode(request, self.encoding)
         if not results:
-            results = []
+            results = {}
         results = look_in_directory(self, request, results)
         if not results:
             raise FileNotFoundError
@@ -112,6 +108,7 @@ class Subdirectory(Directory):
     4 bytes - # of subdirs inside
     4 bytes - # of files inside
     """
+
     def read_subdir_header(self):
         name_len = ord(self.contents.read(1))
         subdir_name = ""
@@ -122,4 +119,3 @@ class Subdirectory(Directory):
         subdir_files_num = struct.unpack('<i', self.contents.read(4))[0]
         header_len = 1 + name_len + 8
         return [subdir_name, subdir_subdir_num, subdir_files_num, header_len]
-
