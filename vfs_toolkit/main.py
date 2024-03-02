@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from plaguevfs.vfs import Vfs
-from plaguevfs.vfs_error import VfsError
+from plaguevfs import Vfs, VfsError, Indexer
 import ui
 import sys
 
@@ -17,7 +16,8 @@ def main(path_to_archive):
         quit()
 
     if not archive.files:
-        config.index.index(archive)
+        temp_index = Indexer()
+        temp_index.index(archive)
     if not archive.files:
         return []
 

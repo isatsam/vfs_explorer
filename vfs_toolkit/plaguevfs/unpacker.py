@@ -1,5 +1,4 @@
 import codecs
-import os
 from .vfs import Vfs
 from .embedded_file import EmbeddedFile
 from .searcher import Searcher

@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem
 import codecs
-from plaguevfs.subdirectory import Subdirectory
+from plaguevfs import Subdirectory
 
 
 class UI(QMainWindow):
