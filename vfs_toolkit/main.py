@@ -1,8 +1,7 @@
 from PyQt6.QtWidgets import QApplication
-import core.config as config
-from core.vfs import Vfs
-from core.vfs_error import VfsError
-import ui.ui as ui
+from plaguevfs.vfs import Vfs
+from plaguevfs.vfs_error import VfsError
+import ui
 import sys
 
 
@@ -30,4 +29,4 @@ def main(path_to_archive):
 
 
 if __name__ == '__main__':
-    main('/home/isa/Projects/plaguevfs/archives/Textures.vfs')
+    main('/home/isa/Projects/patho_vfs/archives/Textures.vfs')

@@ -1,6 +1,5 @@
 import codecs
 from .directory import Directory
-from .vfs import Vfs
 from .embedded_file import EmbeddedFile
 from .subdirectory import Subdirectory
 
@@ -10,7 +9,7 @@ class Indexer:
         self.encoding = None
         self.files = None
 
-    def index(self, archive: Vfs):
+    def index(self, archive: Directory):
         """
         self.files format:
         { b'file_name': <EmbeddedFile object>}
@@ -35,7 +34,7 @@ class Indexer:
             files[name] = file
         return files
 
-    def index_archive(self, archive: Vfs):
+    def index_archive(self, archive: Directory):
         def iter_index(directory):
             dictionary = self.index_directory(directory)
             for num in range(directory.num_subdirs):
