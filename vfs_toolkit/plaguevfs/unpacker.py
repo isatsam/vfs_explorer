@@ -1,5 +1,4 @@
 import codecs
-import os
 from .vfs import Vfs
 from .embedded_file import EmbeddedFile
 from .searcher import Searcher
@@ -17,24 +16,29 @@ class Unpacker:
                 print(f"{num}. {filename}")
             return files[int(input()) - 1]
 
-        file = []
-
-        if os.path.isfile(required):
-            temp_searcher = Searcher()
-            file = temp_searcher.search(archive, required, file)
-        else:
+        temp_searcher = Searcher()
+        file = temp_searcher.search(archive, required)
+        if len(file) == 0:
             raise FileNotFoundError(f"{required} not found in contents")
 
+        # TODO: Better handling of multiple results
+        # Currently will prompt through cli, otherwise will override
+        # file variable with just whatever EmbeddedFile object was found
+        # Although on the searcher's level, we could just return only
+        # the EmbeddedFile objects, without the name, since they're
+        # already aware of its filename
         if type(file) is list:
             if len(file) > 1:
                 file = prompt_user_cli(file)
-            elif len(file) == 1:
-                file = file[0]
+            else:
+                file = file[0][1]
+
+        print(file)
 
         with open(archive.filepath, 'rb') as f:
-            f.seek(file[1].start)
-            data = f.read(file[1].length)
+            f.seek(file.start)
+            data = f.read(file.length)
 
-        out = codecs.decode(file[1].filename, encoding=archive.encoding, errors='strict')
+        out = codecs.decode(file.filename, encoding=archive.encoding, errors='strict')
         with open(out, 'wb') as f:
             f.write(data)

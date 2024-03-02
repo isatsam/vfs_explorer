@@ -11,6 +11,8 @@ class Searcher:
         returns results in such format:
         [ printable_name, found_object ]
         """
+
+        # pre-flight checks
         if not archive.files:
             temp_index = Indexer()
             temp_index.index(archive)
@@ -19,6 +21,7 @@ class Searcher:
 
         request = request.lower()
 
+        # search
         def look_in_directory(directory: Vfs, search_for, found: list):
             for item in directory.files.keys():
                 if search_for in directory.files[item].filename.lower():
