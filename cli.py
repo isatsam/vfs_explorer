@@ -29,9 +29,8 @@ if __name__ == "__main__":
         archive.unpack()
         print(f'Extracted {archive.name}')
 
-    locator = Locator(archive)
     if args.search:
-        results = locator.search(args.search)
+        results = archive.search(args.search)
         for file in results:
             print(f"{file[0]} in {file[1].parent.name}")
 

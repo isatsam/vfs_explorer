@@ -40,6 +40,38 @@ class Directory:
         files = iterate_and_index(self)
         return files
 
+    def search(self, request, results=None):
+        request = request.lower()
+
+        # search
+        def look_in_directory(directory, search_for, found: list):
+            for item in directory.files.keys():
+                if search_for in directory.files[item].name.lower():
+                    if directory.parent is None:
+                        found.append([
+                            codecs.decode(directory.files[item].name, directory.encoding),
+                            directory.files[item]
+                        ])
+                    else:
+                        found.append([
+                            directory.files[item].parent.name + '/' +
+                            codecs.decode(directory.files[item].name, directory.encoding),
+                            directory.files[item]
+                        ])
+            for subdir in directory.subdirs:
+                look_in_directory(subdir, search_for, found)
+            return found
+
+        if type(request) is not bytes:
+            request = codecs.encode(request, self.encoding)
+        if not results:
+            results = []
+        results = look_in_directory(self, request, results)
+        if not results:
+            raise FileNotFoundError
+
+        return results
+
     def unpack(self):
         def unpack_directory(directory):
             if '.vfs' in directory.name:
