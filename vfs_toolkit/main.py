@@ -28,5 +28,5 @@ def main(path_to_archive):
 
 
 if __name__ == '__main__':
-    main('/home/isa/Projects/patho_vfs/archives/Textures.vfs')
+    main(sys.argv[0])
 
