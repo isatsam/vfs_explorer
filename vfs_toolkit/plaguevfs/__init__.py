@@ -1,7 +1,4 @@
-from .indexer import Indexer
-from .searcher import Searcher
-from .unpacker import Unpacker
-from .directory import Directory
+from .locator import Locator
+from .directory import Directory, Subdirectory
 from .vfs import Vfs
 from .vfs_error import VfsError
-from .subdirectory import Subdirectory

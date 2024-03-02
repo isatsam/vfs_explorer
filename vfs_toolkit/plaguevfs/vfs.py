@@ -20,13 +20,15 @@ class Vfs(Directory):
         self.filepath = filepath
         self.name = os.path.basename(filepath)
         self.parent = None
+        self.start = 0
+        self.header_len = 12
         try:
             self.contents = self.open()
         except VfsError as e:
             raise VfsError('Could not open VFS contents: ', e)
         self.num_files, self.num_subdirs = self.read_root_header()
         super().__init__(name=self.name, parent=self.parent, num_subdirs=self.num_subdirs, num_files=self.num_files,
-                         contents=self.contents)
+                         start=self.start, header_len=self.header_len, contents=self.contents)
 
     def open(self):
         if os.path.isfile(self.filepath):

@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from plaguevfs import Vfs, VfsError, Indexer
+from plaguevfs import Vfs, VfsError
 import ui
 import sys
 
@@ -16,8 +16,7 @@ def main(path_to_archive):
         quit()
 
     if not archive.files:
-        temp_index = Indexer()
-        temp_index.index(archive)
+        archive.files = archive.get_files_and_subdirs()
     if not archive.files:
         return []
 
@@ -30,3 +29,4 @@ def main(path_to_archive):
 
 if __name__ == '__main__':
     main('/home/isa/Projects/patho_vfs/archives/Textures.vfs')
+
