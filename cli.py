@@ -4,10 +4,10 @@ from plaguevfs import Vfs, VfsError
 
 if __name__ == "__main__":
     parser = arg.ArgumentParser()
-    parser.add_argument('-a', '--archive', action='store')
-    parser.add_argument('-s', '--search')
-    parser.add_argument('-x', '--extract')
-    parser.add_argument('--extract_all', action='store_true')
+    parser.add_argument('-a', '--archive', action='store', help='path to the .VFS archive')
+    parser.add_argument('-s', '--search', help='search for a filename (recursive)')
+    parser.add_argument('-x', '--extract', help='extract a file by filename')
+    parser.add_argument('--extract_all', action='store_true', help='unpack the whole .VFS archive at once')
     args = parser.parse_args()
 
     if args.archive:
