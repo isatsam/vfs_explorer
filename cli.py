@@ -1,5 +1,5 @@
 import argparse as arg
-from plaguevfs import Vfs, VfsError, Locator
+from plaguevfs import Vfs, VfsError
 
 
 if __name__ == "__main__":
@@ -32,23 +32,24 @@ if __name__ == "__main__":
     if args.search:
         results = archive.search(args.search)
         for file in results:
-            print(f"{file[0]} in {file[1].parent.name}")
+            print(f"{file} in {results[file].parent.name}")
 
     if args.extract:
-        results = locator.search(args.extract)
-        print(results)
+        results = archive.search(args.extract)
         if len(results) == 1:
-            item = results[0][1]
+            item = results[list(results.keys())[0]][1]
             item.extract()
-            print(f'Extracted {item.name.decode(results[i][1].parent.encoding)}')
+            print(f'Extracted {item.name.decode(item.parent.encoding)}')
         else:
-            print("Select one of the files:\n")
-            for i in range(len(results)):
-                print(f"{i}. {results[i][1].parent.name}/{results[i][1].name.decode(results[i][1].parent.encoding)}")
-            selected = int(input())
+            print("Select which file to extract:\n")
+            i = 0
+            for result in results:
+                print(f"{i}. {result}")
+                i += 1
+            selected = int(input('\n'))
             if selected < len(results):
-                item = results[selected][1]
+                item = results[list(results.keys())[selected]]
                 item.extract()
-                print(f'Extracted {item.name.decode(results[i][1].parent.encoding)}')
+                print(f'Extracted {item.name.decode(item.parent.encoding)}')
             else:
                 quit()
