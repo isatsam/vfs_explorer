@@ -31,4 +31,22 @@ UI/NPC_Aglaja_b.png
 <plaguevfs.directory.Subdirectory object at 0x7e29343450d0>
 >>> aglaja_files['UI/NPC_Aglaja.png'].parent.name
 'UI'
->>> aglaja_files['UI/NPC_Aglaja.png'].extract() # retrieve a file from subdirectory```
+>>> aglaja_files['UI/NPC_Aglaja.png'].extract() # retrieve a file from subdirectory
+```
+
+# cli.py
+cli.py is a command-line tool that wraps around plaguevfs library. It currently does everything that the library can do.
+```py
+$ py cli.py --help
+usage: cli.py [-h] [-a ARCHIVE] [-s SEARCH] [-x EXTRACT] [--extract_all]
+
+options:
+  -h, --help            show this help message and exit
+  -a ARCHIVE, --archive ARCHIVE
+                        path to the .VFS archive
+  -s SEARCH, --search SEARCH
+                        search for a filename (recursive)
+  -x EXTRACT, --extract EXTRACT
+                        extract a file by filename
+  --extract_all         unpack the whole .VFS archive at once
+```
