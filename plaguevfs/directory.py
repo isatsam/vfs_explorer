@@ -15,9 +15,16 @@ class Directory:
         self.start = start
         self.header_len = header_len
         self.contents = contents
-        self.files = self.get_files_and_subdirs()
+        self.files = self.read_table_of_contents()
 
-    def get_files_and_subdirs(self):
+    def read_table_of_contents(self) -> dict:
+        """
+        Parses all defined files (filename lengths, filenames, timestamps, byte address) from the table of contents that
+        is always present after a directory's header.
+        :returns: {'filename': EmbeddedFile object}
+        :rtype: dict
+        """
+
         def index_directory(directory):
             # Return to the beginning of the directory in the buffer since we're going to be iterating over files
             directory.contents.seek(directory.start + directory.header_len)
@@ -40,7 +47,13 @@ class Directory:
         files = iterate_and_index(self)
         return files
 
-    def search(self, request, results=None):
+    def search(self, request, results: list = None) -> list:
+        """
+        Recursively searches for filenames that contain the given string
+        :param request: the string to search for
+        :param results: an existing list of results, if we have one already
+        :return: list of EmbeddedFile objects
+        """
         request = request.lower()
 
         # search
@@ -69,6 +82,10 @@ class Directory:
         return results
 
     def unpack(self):
+        """
+        Unpacks the whole directory with its subdirectories at once
+        """
+
         def unpack_directory(directory):
             if '.vfs' in directory.name:
                 target_dir = directory.name[:directory.name.rfind('.vfs')]
@@ -118,4 +135,4 @@ class Subdirectory(Directory):
         subdir_subdir_num = struct.unpack('<i', self.contents.read(4))[0]
         subdir_files_num = struct.unpack('<i', self.contents.read(4))[0]
         header_len = 1 + name_len + 8
-        return [subdir_name, subdir_subdir_num, subdir_files_num, header_len]
+        return subdir_name, subdir_subdir_num, subdir_files_num, header_len
