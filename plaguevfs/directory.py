@@ -19,8 +19,8 @@ class Directory:
 
     def read_table_of_contents(self) -> dict:
         """
-        Parses all defined files (filename lengths, filenames, timestamps, byte address) from the table of contents that
-        is always present after a directory's header.
+        Parses all defined files (filename lengths, filenames, timestamps, byte address) from the table of contents,
+        which is always present after a directory's header.
         :returns: {'filename': EmbeddedFile object}
         :rtype: dict
         """

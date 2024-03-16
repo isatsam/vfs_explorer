@@ -11,24 +11,15 @@ VFS header:
 """
 
 
-class Vfs(Directory):
+class Vfs:
     """
-    VFS is a special subclass of Directory that can generally figure out everything
-        about itself by itself, using the information provided in a file's header.
+    VFS initialises a virtual filesystem by creating the Directory objects
+    for each respective directory inside a .vfs archive.
     """
     def __init__(self, filepath):
         self.filepath = filepath
         self.name = os.path.basename(filepath)
-        self.parent = None
-        self.start = 0
-        self.header_len = 12
-        try:
-            self.contents = self.open()
-        except VfsError as e:
-            raise VfsError('Could not open VFS contents: ', e)
-        self.num_files, self.num_subdirs = self.read_root_header()
-        super().__init__(name=self.name, parent=self.parent, num_subdirs=self.num_subdirs, num_files=self.num_files,
-                         start=self.start, header_len=self.header_len, contents=self.contents)
+        self.root = self.init_root_dir()
 
     def open(self):
         if os.path.isfile(self.filepath):
@@ -40,8 +31,33 @@ class Vfs(Directory):
         else:
             raise FileNotFoundError(f'{self.filepath} doesn\'t exist')
 
-    def read_root_header(self):
-        self.contents.seek(4)
-        subdirs = struct.unpack('<i', self.contents.read(4))[0]
-        files = struct.unpack('<i', self.contents.read(4))[0]
+    @staticmethod
+    def read_root_header(buffer):
+        buffer.seek(4)
+        subdirs = struct.unpack('<i', buffer.read(4))[0]
+        files = struct.unpack('<i', buffer.read(4))[0]
         return [files, subdirs]
+
+    def init_root_dir(self) -> Directory:
+        try:
+            contents = self.open()
+        except VfsError as e:
+            raise VfsError('Could not open VFS contents: ', e)
+        num_files, num_subdirs = self.read_root_header(contents)
+        root = Directory(name=self.name, parent=None, num_subdirs=num_subdirs, num_files=num_files,
+                         start=0, header_len=12, contents=contents)
+        return root
+
+    def extract_files(self, files: list = None) -> list:
+        not_extracted = []
+        if files:
+            for file in files:
+                if file.parent == self or file.parent in self.subdirs:
+                    try:
+                        file.extract()
+                    except AttributeError:
+                        not_extracted.append(file)
+                else:
+                    not_extracted.append(file)
+
+        return not_extracted
