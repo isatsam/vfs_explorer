@@ -15,11 +15,6 @@ def main(path_to_archive):
         print(f"Error opening VFS archive: {er}")
         quit()
 
-    if not archive.files:
-        archive.files = archive.get_files_and_subdirs()
-    if not archive.files:
-        return []
-
     mainWindow = ui.UI()
     mainWindow = mainWindow.CreateArchiveTreeView(archive)
     mainWindow.show()
@@ -28,5 +23,5 @@ def main(path_to_archive):
 
 
 if __name__ == '__main__':
-    main(sys.argv[0])
+    main(sys.argv[1])
 

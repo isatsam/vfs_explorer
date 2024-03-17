@@ -14,10 +14,8 @@ class UI(QMainWindow):
             entry = QTreeWidgetItem([directory.name])
             for subdir in directory.subdirs:
                 entry.addChildren(add_dir_to_tree(items_list, subdir))
-            for item in directory.files:
-                if type(directory) is Subdirectory:
-                    print([codecs.decode(item, directory.encoding)])
-                child = QTreeWidgetItem([codecs.decode(item, directory.encoding)])
+            for item in directory.files.keys():
+                child = QTreeWidgetItem([item])
                 entry.addChild(child)
             items_list.append(entry)
             return items_list
