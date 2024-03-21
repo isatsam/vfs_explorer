@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from plaguevfs import Vfs, VfsError
+from plaguevfs import VfsArchive, VfsError
 import ui
 import sys
 
@@ -10,7 +10,7 @@ def main(path_to_archive):
     # Open and create archive
     OPEN_ARCHIVE = path_to_archive
     try:
-        archive = Vfs(OPEN_ARCHIVE)
+        archive = VfsArchive(OPEN_ARCHIVE)
     except (VfsError, FileNotFoundError) as er:
         print(f"Error opening VFS archive: {er}")
         quit()
