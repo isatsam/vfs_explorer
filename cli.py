@@ -37,7 +37,7 @@ if __name__ == "__main__":
     if args.extract:
         results = archive.root.search(args.extract)
         if len(results) == 1:
-            item = results[list(results.keys())[0]][1]
+            item = results[list(results.keys())[0]]
             item.extract()
             print(f'Extracted {item.name.decode(item.parent.encoding)}')
         else:
