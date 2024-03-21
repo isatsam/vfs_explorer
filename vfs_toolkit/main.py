@@ -15,18 +15,15 @@ def main(path_to_archive):
         print(f"Error opening VFS archive: {er}")
         quit()
 
-    if not archive.files:
-        archive.files = archive.get_files_and_subdirs()
-    if not archive.files:
-        return []
-
     mainWindow = ui.UI()
     mainWindow = mainWindow.CreateArchiveTreeView(archive)
+    size = mainWindow.screen().size()
+    mainWindow.resize(size.width()//2, size.height()//2)
     mainWindow.show()
 
     sys.exit(app.exec())
 
 
 if __name__ == '__main__':
-    main(sys.argv[0])
+    main(sys.argv[1])  # Normally supposed to use sys.arvg[0], but it doesn't work in Pycharm for some reason
 
