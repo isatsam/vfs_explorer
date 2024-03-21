@@ -5,8 +5,9 @@ from .embedded_file import EmbeddedFile
 
 
 class Directory:
-    def __init__(self, name, parent, num_files, num_subdirs, start, header_len, contents):
+    def __init__(self, name, archive, parent, num_files, num_subdirs, start, header_len, contents):
         self.name = name
+        self.archive = archive
         self.parent = parent
         self.num_files = num_files
         self.num_subdirs = num_subdirs
@@ -115,15 +116,15 @@ class Subdirectory(Directory):
         self.contents = byte_contents
         self.start = self.contents.tell()
         self.name, self.num_subdirs, self.num_files, self.header_len = self.read_subdir_header()
-        super().__init__(self.name, self.parent, self.num_files, self.num_subdirs, self.start, self.header_len,
-                         self.contents)
+        super().__init__(self.name, self.parent.archive, self.parent, self.num_files, self.num_subdirs, self.start,
+                         self.header_len, self.contents)
 
     """
     Subdir header:
     1 byte - subdir name length
-    name_len bytes - subdir name
-    4 bytes - # of subdirs inside
-    4 bytes - # of files inside
+    name_len buffer - subdir name
+    4 buffer - # of subdirs inside
+    4 buffer - # of files inside
     """
 
     def read_subdir_header(self):

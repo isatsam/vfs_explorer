@@ -1,10 +1,9 @@
 import codecs
 import struct
-from .directory import Directory
 
 
 class EmbeddedFile:
-    def __init__(self, parent: Directory):
+    def __init__(self, parent):
         self.parent = parent
         (self.name, self.length, self.start, self.end, self.timestamp) = self.read_self(parent.contents)
 
