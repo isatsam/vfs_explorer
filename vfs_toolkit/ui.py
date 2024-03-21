@@ -10,7 +10,7 @@ class UI(QMainWindow):
         self.setWindowTitle('VFS Manager')
 
     @staticmethod
-    def CreateArchiveTreeView(archive):
+    def CreateArchiveTreeView(archive, window_size):
         def add_dir_to_tree(items_list, directory):
             entry = QTreeWidgetItem([directory.name])
             for subdir in directory.subdirs:
@@ -33,14 +33,18 @@ class UI(QMainWindow):
                 # FIXME: this ridiculous decimal precision
                 size = str(size[:len(size[:size.rfind('.')]) + 3]) + ' ' + unitname
 
-                child = QTreeWidgetItem([item, time, size])
+                child = QTreeWidgetItem([item, size, time])
                 entry.addChild(child)
             items_list.append(entry)
             return items_list
 
         tree = QTreeWidget()
         tree.setColumnCount(1)
-        tree.setHeaderLabels(["File", "Timestamp", "Size"])
+        header_labels = ["File", "Size", "Last modified"]
+        tree.setHeaderLabels(header_labels)
+        tree.setColumnWidth(0, int(window_size[0]*0.5))
+        tree.setColumnWidth(1, int(window_size[0]*0.15))
+        tree.setColumnWidth(2, int(window_size[0]*0.1))
         items = []
         items = add_dir_to_tree(items, archive.root)
         tree.insertTopLevelItems(0, items)
