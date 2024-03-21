@@ -1,3 +1,3 @@
 from .directory import Directory, Subdirectory
-from .vfs import Vfs
+from .vfsarchive import VfsArchive
 from .vfs_error import VfsError

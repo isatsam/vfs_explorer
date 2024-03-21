@@ -1,5 +1,5 @@
 import argparse as arg
-from plaguevfs import Vfs, VfsError
+from plaguevfs import VfsArchive, VfsError
 
 
 if __name__ == "__main__":
@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     if args.archive:
         try:
-            archive = Vfs(args.archive)
+            archive = VfsArchive(filepath=args.archive)
         except (VfsError, FileNotFoundError) as er:
             print(f"Error opening VFS archive: {er}")
             quit()
@@ -30,12 +30,12 @@ if __name__ == "__main__":
         print(f'Extracted {archive.name}')
 
     if args.search:
-        results = archive.search(args.search)
+        results = archive.root.search(args.search)
         for file in results:
             print(f"{file} in {results[file].parent.name}")
 
     if args.extract:
-        results = archive.search(args.extract)
+        results = archive.root.search(args.extract)
         if len(results) == 1:
             item = results[list(results.keys())[0]][1]
             item.extract()
