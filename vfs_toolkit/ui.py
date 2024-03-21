@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem
+from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView
 from datetime import datetime
 
 TIME_FORMAT = '%d/%m/%Y, %H:%M:%S'
@@ -23,15 +23,18 @@ class UI(QMainWindow):
                 if size > 1000000:
                     size = str(size/1000000)
                     unitname = 'Mb'
+                    decimals = 3
                 elif size > 1000:
                     size = str(size/1000)
                     unitname = 'Kb'
+                    decomals = 0
                 else:
                     size = str(size)
                     unitname = 'B'
+                    decimals = 0
 
                 # FIXME: this ridiculous decimal precision
-                size = str(size[:len(size[:size.rfind('.')]) + 3]) + ' ' + unitname
+                size = str(size[:len(size[:size.rfind('.')]) + decimals]) + ' ' + unitname
 
                 child = QTreeWidgetItem([item, size, time])
                 entry.addChild(child)
@@ -41,10 +44,11 @@ class UI(QMainWindow):
         tree = QTreeWidget()
         tree.setColumnCount(1)
         header_labels = ["File", "Size", "Last modified"]
+        tree.setColumnWidth(0, window_size[0]//2)
         tree.setHeaderLabels(header_labels)
-        tree.setColumnWidth(0, int(window_size[0]*0.5))
-        tree.setColumnWidth(1, int(window_size[0]*0.15))
-        tree.setColumnWidth(2, int(window_size[0]*0.1))
+        tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)
+        tree.header().setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)
+        tree.header().setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
         items = []
         items = add_dir_to_tree(items, archive.root)
         tree.insertTopLevelItems(0, items)
