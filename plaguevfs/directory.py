@@ -18,6 +18,9 @@ class Directory:
         self.contents = contents
         self.files = self.read_table_of_contents()
 
+    def __str__(self):
+        return self.name
+
     def read_table_of_contents(self) -> dict:
         """
         Parses all defined files (filename lengths, filenames, timestamps, byte address) from the table of contents,
@@ -32,7 +35,7 @@ class Directory:
             files_in_dir = {}
             for i in range(directory.num_files):
                 found_file = EmbeddedFile(parent=directory)
-                name = codecs.decode(found_file.name, self.encoding).lower()
+                name = str(found_file)
                 files_in_dir[name] = found_file
             return files_in_dir
 
@@ -48,7 +51,7 @@ class Directory:
         files = iterate_and_index(self)
         return files
 
-    def search(self, request, results: list = None) -> list:
+    def search(self, request, results: list = None) -> dict:
         """
         Recursively searches for filenames that contain the given string
         :param request: the string to search for
@@ -58,15 +61,13 @@ class Directory:
         request = request.lower()
 
         # search
-        def look_in_directory(directory, search_for, found: list):
+        def look_in_directory(directory, search_for, found: dict):
             for item in directory.files.keys():
                 if search_for in directory.files[item].name.lower():
                     if directory.parent is None:
-                        found[directory.files[item].name.decode(directory.encoding)] = \
-                            directory.files[item]
+                        found[str(directory.files[item])] = directory.files[item]
                     else:
-                        found[directory.files[item].parent.name + '/' + \
-                              directory.files[item].name.decode(directory.encoding)] = \
+                        found[str(directory.files[item].parent) + '/' + str(directory.files[item])] = \
                             directory.files[item]
             for subdir in directory.subdirs:
                 look_in_directory(subdir, search_for, found)

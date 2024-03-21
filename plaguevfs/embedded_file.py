@@ -8,6 +8,9 @@ class EmbeddedFile:
         self.parent = parent
         (self.name, self.length, self.start, self.end, self.timestamp) = self.read_self(parent.contents)
 
+    def __str__(self):
+        return codecs.decode(self.name, self.parent.encoding)
+
     @staticmethod
     def read_self(section):
         def to_datetime(filetime: int) -> datetime:

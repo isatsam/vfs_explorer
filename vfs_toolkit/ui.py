@@ -15,11 +15,11 @@ class UI(QMainWindow):
             entry = QTreeWidgetItem([directory.name])
             for subdir in directory.subdirs:
                 entry.addChildren(add_dir_to_tree(items_list, subdir))
-            for item in directory.files:
-                time = directory.files[item].timestamp
+            for file in directory.files.values():
+                time = file.timestamp
                 time = datetime.fromtimestamp(time).strftime(TIME_FORMAT)
 
-                size = directory.files[item].length
+                size = file.length
                 if size > 1000000:
                     size = str(size/1000000)
                     unitname = 'Mb'
@@ -27,7 +27,7 @@ class UI(QMainWindow):
                 elif size > 1000:
                     size = str(size/1000)
                     unitname = 'Kb'
-                    decomals = 0
+                    decimals = 0
                 else:
                     size = str(size)
                     unitname = 'B'
@@ -36,7 +36,7 @@ class UI(QMainWindow):
                 # FIXME: this ridiculous decimal precision
                 size = str(size[:len(size[:size.rfind('.')]) + decimals]) + ' ' + unitname
 
-                child = QTreeWidgetItem([item, size, time])
+                child = QTreeWidgetItem([str(file), size, time])
                 entry.addChild(child)
             items_list.append(entry)
             return items_list
