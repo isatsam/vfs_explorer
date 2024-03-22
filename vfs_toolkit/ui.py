@@ -77,7 +77,10 @@ class UI(QMainWindow):
     def extractSelected(self):
         selection = [item.text(0) for item in self.tree.selectedItems()]
         for selected in selection:
-            list(self.archive.root.search(selected).values())[0].extract()
+            try:
+                list(self.archive.root.search(selected).values())[0].extract()
+            except FileNotFoundError:
+                continue
 
     def createUI(self, archive):
         screen_size = self.screen().size()
