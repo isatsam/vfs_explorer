@@ -15,8 +15,7 @@ def main(path_to_archive):
         print(f"Error opening VFS archive: {er}")
         quit()
 
-    mainWindow = ui.UI()
-    mainWindow.CreateUI(archive)
+    mainWindow = ui.UI(archive)
 
     sys.exit(app.exec())
 

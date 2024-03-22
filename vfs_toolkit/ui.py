@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView, QToolBar
+from PyQt6.QtGui import QAction
 import plaguevfs as pvfs
 from datetime import datetime
 
@@ -9,10 +10,11 @@ class VfsTree(QTreeWidget):
     def __init__(self, archive):
         super().__init__()
         self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
-        self.selected = self.selectedItems()
+        self.selectionModel().selectionChanged.connect(self.test_action)
+
         self.CreateArchiveTreeView(archive)
 
-    def test_action(self, item):
+    def test_action(self):
         pass
 
     def CreateArchiveTreeView(self, archive):
@@ -59,15 +61,25 @@ class VfsTree(QTreeWidget):
 
 
 class UI(QMainWindow):
-    def __init__(self):
+    def __init__(self, archive):
         super().__init__()
-        self.setWindowTitle('VFS Manager')
+        self.archive = archive
+        self.tree = self.createUI(self.archive)
 
     def createToolbar(self):
         toolbar = QToolBar("My main toolbar")
+        toolbar.setMinimumHeight(40)  # TODO
         self.addToolBar(toolbar)
+        button_action = QAction("Extract selected files", self)
+        button_action.triggered.connect(self.extractSelected)
+        toolbar.addAction(button_action)
 
-    def CreateUI(self, archive):
+    def extractSelected(self):
+        selection = [item.text(0) for item in self.tree.selectedItems()]
+        for selected in selection:
+            list(self.archive.root.search(selected).values())[0].extract()
+
+    def createUI(self, archive):
         screen_size = self.screen().size()
         window_size = [screen_size.width() // 2, screen_size.height() // 2]
         self.resize(window_size[0], window_size[1])
@@ -79,3 +91,5 @@ class UI(QMainWindow):
         self.setCentralWidget(new_vfs_tree)
 
         self.show()
+
+        return new_vfs_tree
