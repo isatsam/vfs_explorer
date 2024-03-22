@@ -1,17 +1,22 @@
-from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView
+from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView, QToolBar
+import plaguevfs as pvfs
 from datetime import datetime
 
 TIME_FORMAT = '%d/%m/%Y, %H:%M:%S'
 
 
-class UI(QMainWindow):
-    def __init__(self):
+class VfsTree(QTreeWidget):
+    def __init__(self, archive):
         super().__init__()
-        self.setWindowTitle('VFS Manager')
+        self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
+        self.selected = self.selectedItems()
+        self.CreateArchiveTreeView(archive)
 
-    @staticmethod
-    def CreateArchiveTreeView(archive, window_size):
-        def add_dir_to_tree(items_list, directory):
+    def test_action(self, item):
+        pass
+
+    def CreateArchiveTreeView(self, archive):
+        def add_dir_to_tree(items_list, directory: pvfs.Directory):
             entry = QTreeWidgetItem([directory.name])
             for subdir in directory.subdirs:
                 entry.addChildren(add_dir_to_tree(items_list, subdir))
@@ -21,11 +26,11 @@ class UI(QMainWindow):
 
                 size = file.length
                 if size > 1000000:
-                    size = str(size/1000000)
+                    size = str(size / 1000000)
                     unitname = 'Mb'
                     decimals = 3
                 elif size > 1000:
-                    size = str(size/1000)
+                    size = str(size / 1000)
                     unitname = 'Kb'
                     decimals = 0
                 else:
@@ -41,16 +46,36 @@ class UI(QMainWindow):
             items_list.append(entry)
             return items_list
 
-        tree = QTreeWidget()
-        tree.setColumnCount(1)
+        self.setColumnCount(1)
         header_labels = ["File", "Size", "Last modified"]
-        tree.setColumnWidth(0, window_size[0]//2)
-        tree.setHeaderLabels(header_labels)
-        tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)
-        tree.header().setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)
-        tree.header().setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
+        self.setColumnWidth(0, self.window().size().width() // 2)
+        self.setHeaderLabels(header_labels)
+        self.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)
+        self.header().setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)
+        self.header().setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
         items = []
         items = add_dir_to_tree(items, archive.root)
-        tree.insertTopLevelItems(0, items)
-        return tree
+        self.insertTopLevelItems(0, items)
 
+
+class UI(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('VFS Manager')
+
+    def createToolbar(self):
+        toolbar = QToolBar("My main toolbar")
+        self.addToolBar(toolbar)
+
+    def CreateUI(self, archive):
+        screen_size = self.screen().size()
+        window_size = [screen_size.width() // 2, screen_size.height() // 2]
+        self.resize(window_size[0], window_size[1])
+        self.setWindowTitle(archive.name)
+
+        self.createToolbar()
+
+        new_vfs_tree = VfsTree(archive)
+        self.setCentralWidget(new_vfs_tree)
+
+        self.show()

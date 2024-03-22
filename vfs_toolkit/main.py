@@ -16,11 +16,7 @@ def main(path_to_archive):
         quit()
 
     mainWindow = ui.UI()
-    screen_size = mainWindow.screen().size()
-    window_size = [screen_size.width()//2, screen_size.height()//2]
-    mainWindow = mainWindow.CreateArchiveTreeView(archive, window_size)
-    mainWindow.resize(window_size[0], window_size[1])
-    mainWindow.show()
+    mainWindow.CreateUI(archive)
 
     sys.exit(app.exec())
 
