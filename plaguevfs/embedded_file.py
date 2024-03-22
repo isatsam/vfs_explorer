@@ -1,5 +1,6 @@
 import codecs
 import struct
+import os
 from datetime import datetime
 
 
@@ -47,3 +48,7 @@ class EmbeddedFile:
         out = codecs.decode(self.name, encoding=self.parent.encoding, errors='strict')
         with open(out, 'wb') as f:
             f.write(data)
+
+        dt_epoch = datetime.now().timestamp()
+        #      filename   access_date modification_date
+        os.utime(out, (dt_epoch, self.timestamp))
