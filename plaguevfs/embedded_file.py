@@ -54,7 +54,10 @@ class EmbeddedFile:
         out = codecs.decode(self.name, encoding=self.parent.encoding, errors='strict')
 
         if create_subdir_on_disk:
-            target_dir = self.parent.name[:self.parent.name.rfind('.')]
+            if self.parent.parent and '.' in self.parent.name:
+                target_dir = self.parent.name[:self.parent.name.rfind('.')]
+            else:
+                target_dir = self.parent.name
             out = os.path.join(out_path, target_dir, out)
             if not os.path.exists(os.path.join(out_path, target_dir)):
                 os.mkdir(os.path.join(out_path, target_dir))
