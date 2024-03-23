@@ -74,14 +74,6 @@ class UI(QMainWindow):
         button_action.triggered.connect(self.extractSelected)
         toolbar.addAction(button_action)
 
-    def extractSelected(self):
-        selection = [item.text(0) for item in self.tree.selectedItems()]
-        for selected in selection:
-            try:
-                list(self.archive.root.search(selected).values())[0].extract()
-            except FileNotFoundError:
-                continue
-
     def createUI(self, archive):
         screen_size = self.screen().size()
         window_size = [screen_size.width() // 2, screen_size.height() // 2]
@@ -96,3 +88,27 @@ class UI(QMainWindow):
         self.show()
 
         return new_vfs_tree
+
+    def extractSelected(self):
+        extract_files = []
+        extract_dirs = []
+        for item in self.tree.selectedItems():
+            if item.childCount() == 0:
+                extract_files.append(item)
+            else:
+                extract_dirs.append(item)
+
+        for directory in extract_dirs:
+            for i in range(directory.childCount()):
+                extract_files.append(directory.child(i))
+
+        for file_entry in extract_files:
+            candidates = self.archive.root.search(file_entry.text(0)).values()
+            for candidate in candidates:
+                if file_entry.parent().text(0) == candidate.parent.name:
+                    try:
+                        candidate.extract(create_subdir_on_disk=True)
+                    except FileNotFoundError:
+                        print(file_entry.text(0))
+        # TODO: 'extract right here' and 'extract by path ./xxx/yyy/etc' should be separate options in the GUI
+        # TODO: prompt a confirmation if extracting over X amount of files
