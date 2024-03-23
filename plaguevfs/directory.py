@@ -83,12 +83,12 @@ class Directory:
 
         return results
 
-    def unpack(self):
+    def unpack(self, requested_files: list):
         """
         Unpacks the whole directory with its subdirectories at once
         """
 
-        def unpack_directory(directory):
+        def extract_directory(directory):
             if '.vfs' in directory.name:
                 target_dir = directory.name[:directory.name.rfind('.vfs')]
             else:
@@ -99,16 +99,16 @@ class Directory:
             os.chdir(target_dir)
 
             for file in directory.files.values():
-                directory.contents.seek(file.start)
-                file_contents = directory.contents.read(file.length)
-                target = file.name
-                with open(target, 'wb') as t:
-                    t.write(file_contents)
+                if requested_files:
+                    if file in requested_files:
+                        file.extract()
+                else:
+                    file.extract()
 
             for subdir in directory.subdirs:
-                unpack_directory(subdir)
+                extract_directory(subdir)
 
-        unpack_directory(self)
+        extract_directory(self)
 
 
 class Subdirectory(Directory):

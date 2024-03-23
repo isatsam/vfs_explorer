@@ -41,11 +41,24 @@ class EmbeddedFile:
 
         return [filename, length, start, end, timestamp]
 
-    def extract(self):
+    def extract(self, create_subdir_on_disk=False, out_path=os.getcwd()):
+        """
+        Extracts current file.
+        :param create_subdir_on_disk: whether the file should be written to a subdirectory or just to the working dir
+        :param out_path: path where the new directory will be created
+        :return: nothing
+        """
         self.parent.contents.seek(self.start)
         data = self.parent.contents.read(self.length)
 
         out = codecs.decode(self.name, encoding=self.parent.encoding, errors='strict')
+
+        if create_subdir_on_disk:
+            target_dir = self.parent.name[:self.parent.name.rfind('.')]
+            out = os.path.join(out_path, target_dir, out)
+            if not os.path.exists(os.path.join(out_path, target_dir)):
+                os.mkdir(os.path.join(out_path, target_dir))
+
         with open(out, 'wb') as f:
             f.write(data)
 
