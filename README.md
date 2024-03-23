@@ -10,12 +10,16 @@ VFS Toolkit is a tool for previewing a VFS archive, such as those used in Pathol
 ## To-do list
 - [X] Extract files from GUI
   - [x] Extract directories by selecting the directory's name in the tree
+- [ ] More reliable file search (ensure we always get the correct file and not a file with the same name from another subdirectory)
+- [ ] Provide pre-built binaries
+- [ ] "Extract as" button, converting files to more common formats (for ex. a .tga named .tex -> .png)
+- [ ] Search in files
 - [ ] File information layout
   - [ ] Identify file types with magic
+  - [ ] Wrap around libmagic to identify Pathologic-specific file formats? (LSH, main.dat and such)
 - [ ] Preview layout
   - [ ] Preview text files
   - [ ] Preview images
-- [ ] Provide pre-built binaries with libraries included (such as libmagic)
 
 # plaguevfs
 `plaguevfs` is a library for parsing, searching, and unpacking .VFS archives shipped with all versions of Pathologic 1
