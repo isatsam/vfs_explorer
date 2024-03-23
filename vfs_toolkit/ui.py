@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView, QToolBar
 from PyQt6.QtGui import QAction
+from PyQt6.QtCore import Qt
 import plaguevfs as pvfs
 from datetime import datetime
 
@@ -70,9 +71,12 @@ class UI(QMainWindow):
         toolbar = QToolBar("My main toolbar")
         toolbar.setMinimumHeight(40)  # TODO
         self.addToolBar(toolbar)
+        toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         button_action = QAction("Extract selected files", self)
         button_action.triggered.connect(self.extractSelected)
         toolbar.addAction(button_action)
+        toolbar.setFloatable(False)
+        toolbar.setMovable(False)
 
     def createUI(self, archive):
         screen_size = self.screen().size()
