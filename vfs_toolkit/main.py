@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QApplication
 from plaguevfs import VfsArchive, VfsError
-import ui
 import sys
+from .ui import UI
 
 
 def main(path_to_archive):
@@ -15,7 +15,7 @@ def main(path_to_archive):
         print(f"Error opening VFS archive: {er}")
         quit()
 
-    mainWindow = ui.UI(archive)
+    mainWindow = UI(archive)
 
     sys.exit(app.exec())
 
