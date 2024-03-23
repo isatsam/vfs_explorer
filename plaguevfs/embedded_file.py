@@ -37,7 +37,7 @@ class EmbeddedFile:
         start = struct.unpack('<i', section.read(4))[0]
         end = start+length
         timestamp = struct.unpack('<q', section.read(8))[0]
-        timestamp = int(to_datetime(timestamp).strftime('%s'))
+        timestamp = int(to_datetime(timestamp).timestamp())
 
         return [filename, length, start, end, timestamp]
 
