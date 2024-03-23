@@ -1,5 +1,5 @@
 # vfs_toolkit
-VFS Toolkit is a tool for previewing a VFS archive, such as those used in Pathologic (2005), and extracting files from it.
+VFS Toolkit is a tool for previewing and extracting VFS archives, such as those used in Pathologic (2005).
 
 ## Installation
 1. Clone this repository
