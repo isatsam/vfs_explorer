@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView, QToolBar
-from PyQt6.QtGui import QAction
-from PyQt6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView, QToolBar, QLineEdit
+from PySide6.QtGui import QAction
+from PySide6.QtCore import Qt
 import plaguevfs as pvfs
 from datetime import datetime
 
