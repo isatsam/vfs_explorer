@@ -12,29 +12,35 @@ class UI(QMainWindow):
 
         self.tree.topLevelItemCount()
 
-        self.toolbar = self.createToolbar()
-        self.searchbar = self.createSearchBar()
-        self.toolbar.addWidget(self.searchbar)
+        self.createToolbar()
+        self.addToolBarBreak()
+        self.createSearchBar()
 
         self.show()
 
     def createToolbar(self):
-        toolbar = QToolBar("My main toolbar")
-        toolbar.setMinimumHeight(40)  # TODO
-        self.addToolBar(toolbar)
+        toolbar = QToolBar()
         toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         button_action = QAction("Extract selected files", self)
         button_action.triggered.connect(self.extractSelected)
         toolbar.addAction(button_action)
         toolbar.setFloatable(False)
         toolbar.setMovable(False)
-        return toolbar
+
+        self.addToolBar(toolbar)
 
     def createSearchBar(self):
         search_bar = QLineEdit()
+        search_bar.setPlaceholderText("Search files")
         search_bar.textChanged.connect(self.showSearchResults)
 
-        return search_bar
+        toolbar = QToolBar()
+        toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
+        toolbar.setFloatable(False)
+        toolbar.setMovable(False)
+        toolbar.addWidget(search_bar)
+
+        self.addToolBar(toolbar)
 
     def showSearchResults(self, text):
         found = []
