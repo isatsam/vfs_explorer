@@ -65,7 +65,15 @@ class UI(QMainWindow):
     def __init__(self, archive):
         super().__init__()
         self.archive = archive
-        self.tree = self.createUI(self.archive)
+        self.tree, self.tree_items = self.createTreeView(self.archive)
+
+        self.tree.topLevelItemCount()
+
+        self.toolbar = self.createToolbar()
+        self.searchbar = self.createSearchBar()
+        self.toolbar.addWidget(self.searchbar)
+
+        self.show()
 
     def createToolbar(self):
         toolbar = QToolBar("My main toolbar")
@@ -77,21 +85,56 @@ class UI(QMainWindow):
         toolbar.addAction(button_action)
         toolbar.setFloatable(False)
         toolbar.setMovable(False)
+        return toolbar
 
-    def createUI(self, archive):
+    def createSearchBar(self):
+        search_bar = QLineEdit()
+        search_bar.textChanged.connect(self.showSearchResults)
+
+        return search_bar
+
+    def showSearchResults(self, text):
+        found = []
+        for item in self.tree_items:
+            if text.lower() not in item.text(0).lower():
+                item.setHidden(True)
+            else:
+                item.setHidden(False)
+                found.append(item)
+        for item in found:
+            if item.parent():
+                item.parent().setHidden(False)
+                item.parent().setExpanded(True)
+
+    def createTreeView(self, archive):
+        def get_subtree_nodes(tree_widget_item):
+            """Returns all QTreeWidgetItems in the subtree rooted at the given node."""
+            nodes = [tree_widget_item]
+            for i in range(tree_widget_item.childCount()):
+                nodes.extend(get_subtree_nodes(tree_widget_item.child(i)))
+            return nodes
+
+        def get_all_items(tree_widget):
+            """Returns all QTreeWidgetItems in the given QTreeWidget."""
+            all_items = []
+            for i in range(tree_widget.topLevelItemCount()):
+                top_item = tree_widget.topLevelItem(i)
+                all_items.extend(get_subtree_nodes(top_item))
+            return all_items
+
         screen_size = self.screen().size()
         window_size = [screen_size.width() // 2, screen_size.height() // 2]
         self.resize(window_size[0], window_size[1])
         self.setWindowTitle(archive.name)
 
-        self.createToolbar()
-
         new_vfs_tree = VfsTree(archive)
+        #print(new_vfs_tree.topLevelItemCount())
+        #all_items_in_tree = []
+        all_items_in_tree = get_all_items(new_vfs_tree)
+
         self.setCentralWidget(new_vfs_tree)
 
-        self.show()
-
-        return new_vfs_tree
+        return new_vfs_tree, all_items_in_tree
 
     def extractSelected(self):
         extract_files = []
