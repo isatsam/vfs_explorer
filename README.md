@@ -10,7 +10,7 @@ VFS Toolkit is a tool for previewing and extracting VFS archives, such as those 
 ## To-do list
 - [X] Extract files from GUI
   - [x] Extract directories by selecting the directory's name in the tree
-- [ ] More reliable file search (ensure we always get the correct file and not a file with the same name from another subdirectory)
+- [X] More reliable file search (ensure we always get the correct file and not a file with the same name from another subdirectory)
 - [ ] "Open archive" menu - currently we specify path to the archive via a system argument, but it has to be all-GUI
 - [ ] Provide pre-built binaries
 - [ ] "Extract as" button, converting files to more common formats (for ex. a .tga named .tex -> .png)

@@ -99,12 +99,27 @@ class UI(QMainWindow):
                 extract_files.append(directory.child(i))
 
         for file_entry in extract_files:
+            def verify_path(embed_file, file_tree_item):
+                if not embed_file.parent.parent and file_tree_item.parent() == self.tree_items[0]:
+                    """ Check for files in top-level directories/trees """
+                    return True
+
+                next_tree_parent = file_tree_item.parent()
+                next_embed_parent = embed_file.parent
+                i = 0
+                while next_tree_parent and next_embed_parent:
+                    if next_tree_parent.text(0) != next_embed_parent.name:
+                        return False
+                    else:
+                        next_tree_parent = next_tree_parent.parent()
+                        next_embed_parent = next_embed_parent.parent
+
+                return True
+
             candidates = self.archive.root.search(file_entry.text(0)).values()
             for candidate in candidates:
-                if file_entry.parent().text(0) == candidate.parent.name:
-                    try:
-                        candidate.extract(create_subdir_on_disk=True)
-                    except FileNotFoundError:
-                        print(file_entry.text(0))
+                if verify_path(candidate, file_entry):
+                    candidate.extract(create_subdir_on_disk=True)
+
         # TODO: 'extract right here' and 'extract by path ./xxx/yyy/etc' should be separate options in the GUI
         # TODO: prompt a confirmation if extracting over X amount of files
