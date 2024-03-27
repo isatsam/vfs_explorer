@@ -4,7 +4,7 @@ import sys
 from .ui import UI
 
 
-def main(path_to_archive):
+def start(path_to_archive):
     app = QApplication([])
 
     # Open and create archive
@@ -18,8 +18,3 @@ def main(path_to_archive):
     mainWindow = UI(archive)
 
     sys.exit(app.exec())
-
-
-if __name__ == '__main__':
-    main(sys.argv[1])  # Normally supposed to use sys.arvg[0], but it doesn't work in Pycharm for some reason
-
