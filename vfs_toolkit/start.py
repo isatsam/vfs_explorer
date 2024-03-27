@@ -4,17 +4,21 @@ import sys
 from .ui import UI
 
 
-def start(path_to_archive):
-    app = QApplication([])
+def start(path_to_archive=None):
 
-    # Open and create archive
-    OPEN_ARCHIVE = path_to_archive
-    try:
-        archive = VfsArchive(OPEN_ARCHIVE)
-    except (VfsError, FileNotFoundError) as er:
-        print(f"Error opening VFS archive: {er}")
-        quit()
+    if path_to_archive:
+        # Create archive from argument passed to QApplication instance
+        app = QApplication([path_to_archive])
+        try:
+            archive = VfsArchive(app.arguments()[0])
+        except (VfsError, FileNotFoundError) as er:
+            print(f"Error opening VFS archive: {er}")
+            quit()
 
-    mainWindow = UI(archive)
+        mainWindow = UI(archive)
+
+    else:
+        app = QApplication([])
+        mainWindow = UI(None)
 
     sys.exit(app.exec())

@@ -1,4 +1,6 @@
-from PySide6.QtWidgets import QMainWindow, QToolBar, QLineEdit
+import os
+from plaguevfs import VfsArchive
+from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QToolBar, QLineEdit, QPushButton, QFileDialog
 from PySide6.QtGui import QAction
 from PySide6.QtCore import Qt
 from .vfs_tree import VfsTree
@@ -7,44 +9,60 @@ from .vfs_tree import VfsTree
 class UI(QMainWindow):
     def __init__(self, archive):
         super().__init__()
-        self.archive = archive
-        self.tree, self.tree_items = self.createTreeView(self.archive)
 
-        self.tree.topLevelItemCount()
+        self.window_size = [self.screen().size().width() // 2, self.screen().size().height() // 2]
+        self.resize(self.window_size[0], self.window_size[1])
 
-        self.createToolbar()
+        self.mainToolbar = self.createToolbar()
         self.addToolBarBreak()
-        self.createSearchBar()
+        self.searchToolbar = self.createSearchBar()
+
+        self.childLayout = QVBoxLayout()
+        self.layoutHoldingWidget = QWidget()
+        self.layoutHoldingWidget.setLayout(self.childLayout)
+        self.setCentralWidget(self.layoutHoldingWidget)
+
+        self.archive = archive
+        if archive:
+            self.tree, self.treeItems = self.createTreeView(self.archive)
+            self.openFileDialog = None
+        else:
+            self.createOpenArchiveWindow()
+            self.tree, self.treeItems = (None, None)
 
         self.show()
 
     def createToolbar(self):
         toolbar = QToolBar()
         toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
-        button_action = QAction("Extract selected files", self)
-        button_action.triggered.connect(self.extractSelected)
-        toolbar.addAction(button_action)
+
+        buttonAction = QAction("Extract selected files", self)
+        buttonAction.triggered.connect(self.extractSelected)
+
         toolbar.setFloatable(False)
         toolbar.setMovable(False)
+        toolbar.addAction(buttonAction)
 
         self.addToolBar(toolbar)
+        return toolbar
 
     def createSearchBar(self):
-        search_bar = QLineEdit()
-        search_bar.setPlaceholderText("Search files")
-        search_bar.textChanged.connect(self.showSearchResults)
+        searchBar = QLineEdit()
+        searchBar.setPlaceholderText("Search")
+        searchBar.textChanged.connect(self.showSearchResults)
 
         toolbar = QToolBar()
         toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         toolbar.setFloatable(False)
         toolbar.setMovable(False)
-        toolbar.addWidget(search_bar)
+        toolbar.addWidget(searchBar)
 
         self.addToolBar(toolbar)
+        return toolbar
 
     def showSearchResults(self, text):
         found = []
-        for item in self.tree_items:
+        for item in self.treeItems:
             if text.lower() not in item.text(0).lower():
                 item.setHidden(True)
             else:
@@ -54,6 +72,37 @@ class UI(QMainWindow):
             if item.parent():
                 item.parent().setHidden(False)
                 item.parent().setExpanded(True)
+
+    def createOpenArchiveWindow(self):
+        def open_from_file():
+            openDialog.exec()
+            selected = openDialog.selectedFiles()[0]
+            try:
+                new_archive = VfsArchive(selected)
+                self.tree, self.treeItems = self.createTreeView(new_archive)
+            except IndexError:
+                pass
+            except Exception as e:
+                print(e)
+
+        self.setWindowTitle('VFS Toolkit')
+        self.mainToolbar.setDisabled(True)
+        self.searchToolbar.setDisabled(True)
+
+        openArchiveButton = QPushButton('&Open', self)
+        openArchiveButton.setText('Open archive')
+        openArchiveButton.setMinimumSize(90, 40)
+
+        openDialog = QFileDialog(self)
+        openDialog.setFileMode(QFileDialog.ExistingFile)
+        openDialog.setViewMode(QFileDialog.Detail)
+        openDialog.setNameFilter('VFS archives (*.vfs)')
+
+        openArchiveButton.clicked.connect(open_from_file)
+
+        self.childLayout.addWidget(openArchiveButton, alignment=Qt.AlignCenter)
+
+        return openDialog
 
     def createTreeView(self, archive):
         def get_subtree_nodes(tree_widget_item):
@@ -71,21 +120,26 @@ class UI(QMainWindow):
                 all_items.extend(get_subtree_nodes(top_item))
             return all_items
 
-        screen_size = self.screen().size()
-        window_size = [screen_size.width() // 2, screen_size.height() // 2]
-        self.resize(window_size[0], window_size[1])
         self.setWindowTitle(archive.name)
+        self.mainToolbar.setDisabled(False)
+        self.searchToolbar.setDisabled(False)
 
         new_vfs_tree = VfsTree(archive)
-        #print(new_vfs_tree.topLevelItemCount())
-        #all_items_in_tree = []
         all_items_in_tree = get_all_items(new_vfs_tree)
 
-        self.setCentralWidget(new_vfs_tree)
+        for widget_index in range(self.childLayout.count()):
+            widget = self.childLayout.itemAt(widget_index).widget()
+            self.childLayout.removeWidget(widget)
+
+        self.childLayout.addWidget(new_vfs_tree)
 
         return new_vfs_tree, all_items_in_tree
 
     def extractSelected(self):
+        if len(self.tree.selectedItems()) > 10:
+            pass
+        # TODO: spawn "Are you sure you want to extract N items?" popup
+
         extract_files = []
         extract_dirs = []
         for item in self.tree.selectedItems():
@@ -100,7 +154,7 @@ class UI(QMainWindow):
 
         for file_entry in extract_files:
             def verify_path(embed_file, file_tree_item):
-                if not embed_file.parent.parent and file_tree_item.parent() == self.tree_items[0]:
+                if not embed_file.parent.parent and file_tree_item.parent() == self.treeItems[0]:
                     """ Check for files in top-level directories/trees """
                     return True
 
@@ -122,4 +176,3 @@ class UI(QMainWindow):
                     candidate.extract(create_subdir_on_disk=True)
 
         # TODO: 'extract right here' and 'extract by path ./xxx/yyy/etc' should be separate options in the GUI
-        # TODO: prompt a confirmation if extracting over X amount of files
