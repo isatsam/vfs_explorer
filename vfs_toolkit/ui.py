@@ -63,23 +63,27 @@ class UI(QMainWindow):
     def showSearchResults(self, text):
         found = []
         for item in self.treeItems:
-            if text.lower() not in item.text(0).lower():
-                item.setHidden(True)
-            else:
-                item.setHidden(False)
+            item.setHidden(True)
+
+        for item in self.treeItems:
+            if text.lower() in item.text(0).lower():
                 found.append(item)
+
         for item in found:
-            if item.parent():
-                item.parent().setHidden(False)
-                item.parent().setExpanded(True)
+            item.setHidden(False)
+            next_parent = item.parent()
+            while next_parent is not None:
+                next_parent.setHidden(False)
+                next_parent.setExpanded(True)
+                next_parent = next_parent.parent()
 
     def createOpenArchiveWindow(self):
         def open_from_file():
             openDialog.exec()
             selected = openDialog.selectedFiles()[0]
             try:
-                new_archive = VfsArchive(selected)
-                self.tree, self.treeItems = self.createTreeView(new_archive)
+                self.archive = VfsArchive(selected)
+                self.tree, self.treeItems = self.createTreeView(self.archive)
             except IndexError:
                 pass
             except Exception as e:
