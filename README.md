@@ -10,7 +10,7 @@ VFS Toolkit is a tool for previewing and extracting files stored in VFS archives
 1. Clone this repository, or download ZIP (under the green Code button) and extract it
 2. Move into the new directory
 3. Ensure you have all required packages installed: `pip install -r requirements.txt`
-    - If your system is [PEP-668](https://peps.python.org/pep-0668/)-compilant (i.e. you see a 'externally managed environment' error message), see **step #3 in Developing** below on how to set up a virtual environment to run VFS Toolkit. This workaround will not be required once pre-built binaries will become available.
+    - If your system is [PEP-668](https://peps.python.org/pep-0668/)-compilant (i.e. you see a 'externally managed environment' error message), see **step #3 in Developing** below on how to set up a virtual environment to run VFS Toolkit. The virtual environment has to be reactivated every session (so if you don't see `(venv)` before the prompt in your terminal, it needs to be activated again). This workaround will not be required once pre-built binaries will become available.
 5. Run VFS Toolkit as a module: `python -m vfs_toolkit`. Or, optionally, specify a path to a VFS archive right-away: `python -m vfs_toolkit /path/to/Archive.vfs`
 
 ## Developing
