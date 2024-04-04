@@ -10,7 +10,15 @@ VFS Toolkit is a tool for previewing and extracting files stored in VFS archives
 1. Clone this repository, or download ZIP (under the green Code button) and extract it
 2. Move into the new directory
 3. Ensure you have all required packages installed: `pip install -r requirements.txt`
-4. Run VFS Toolkit as a module: `python -m vfs_toolkit`. Or, optionally, specify a path to a VFS archive right-away: `python -m vfs_toolkit /path/to/Archive.vfs`
+    - If your system is [PEP-668](https://peps.python.org/pep-0668/)-compilant (i.e. you see a 'externally managed environment' error message), see **step #3 in Developing** below on how to set up a virtual environment to run VFS Toolkit. This workaround will not be required once pre-built binaries will become available.
+5. Run VFS Toolkit as a module: `python -m vfs_toolkit`. Or, optionally, specify a path to a VFS archive right-away: `python -m vfs_toolkit /path/to/Archive.vfs`
+
+## Developing
+1. Clone this repository: `git clone git@github.com:isatsam/vfs_toolkit.git`
+2. Move into the new directory: `cd vfs_toolkit`
+3. Create and activate a virtual environment: `python -m venv venv`, then source it: for Unix-based systems `source ./venv/bin/activate`; for Windows on PowerShell: `venv\Scripts\Activate.ps1`; for Windows with cmd.exe: `venv\Scripts\activate.bat`
+4. Install the required packages: `pip install -r requirements.txt`
+VFS Toolkit and plaguevfs both follow [PEP-8 (aka Style Guide for Python Code)](https://peps.python.org/pep-0008/) to the best of their ability, so an IDE that can automatically suggest or correct your code to that style would probably serve you best. For docstrings, reStructuredText format is used.
 
 ## To-do list
 - [X] Extract files from GUI
