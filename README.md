@@ -16,8 +16,11 @@ VFS Toolkit is a tool for previewing and extracting files stored in VFS archives
 ## Developing
 1. Clone this repository: `git clone git@github.com:isatsam/vfs_toolkit.git`
 2. Move into the new directory: `cd vfs_toolkit`
-3. Create and activate a virtual environment: `python -m venv venv`, then source it: for Unix-based systems `source ./venv/bin/activate`; for Windows on PowerShell: `venv\Scripts\Activate.ps1`; for Windows with cmd.exe: `venv\Scripts\activate.bat`
-4. Install the required packages: `pip install -r requirements.txt`
+3. Create and activate a virtual environment: `python -m venv venv`, then source it:
+   - for Unix-based systems `source ./venv/bin/activate`
+   - for Windows on PowerShell: `venv\Scripts\Activate.ps1`
+   - for Windows with cmd.exe: `venv\Scripts\activate.bat`
+5. Install the required packages: `pip install -r requirements.txt`  
 VFS Toolkit and plaguevfs both follow [PEP-8 (aka Style Guide for Python Code)](https://peps.python.org/pep-0008/) to the best of their ability, so an IDE that can automatically suggest or correct your code to that style would probably serve you best. For docstrings, reStructuredText format is used.
 
 ## To-do list
