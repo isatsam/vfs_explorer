@@ -30,7 +30,8 @@ class Extractor:
         try:
             target_dir_info = QFileInfo(cls.spawnTargetPathPrompt(ui_obj) + '/')
             target_path = target_dir_info.absolutePath()
-        except IndexError:
+        except NotADirectoryError as e:
+            print(e)
             return
 
         extract_objects = []
@@ -41,32 +42,25 @@ class Extractor:
                     extract_objects.append(candidate)
 
         multiple_files = len(extract_objects) > 1
-        skip_if_it_overwrites = False
-        overwrite_all = False
+        user_response = None
+        apply_all_selected = False
         for obj in extract_objects:
             target_filepath = os.path.join(target_path, obj.name)
-            if os.path.isfile(target_filepath) and skip_if_it_overwrites:
-                continue
-
             if os.path.isfile(target_filepath):
-                if not overwrite_all:
-                    user_response = cls.overwriteFilePrompt(obj.name, target_path, multiple_files)
+                if not apply_all_selected:
+                    display_path = os.path.basename(target_path)
+                    user_response, apply_all_selected = cls.overwriteFilePrompt(obj.name, display_path, multiple_files)
 
-                    match user_response:
-                        case 16384:     # Yes, overwrite this file (will just continue executing)
-                            pass
-                        case 32768:     # Yes, overwrite all
-                            overwrite_all = True
-                        case 131072:    # No, skip overwrites
-                            skip_if_it_overwrites = True
-                        case 4194304:   # User cancelled, escape the loop
-                            break
-                        case _:         # No, don't overwrite this file (go back to the loop)
-                            continue
+                match user_response:
+                    case 16384:     # Yes, overwrite
+                        pass
+                    case 4194304:   # User cancelled, escape the loop
+                        break
+                    case _:         # No, don't overwrite this file (go back to the loop)
+                        continue
 
             obj.extract(out_path=target_path)
             print(f'Extracted {obj.name} to {target_path}')
-
     # TODO: 'extract right here' and 'extract by path ./xxx/yyy/etc' should be separate options in the GUI
 
     @classmethod
@@ -77,12 +71,10 @@ class Extractor:
         openDialog.setOption(QFileDialog.DontUseNativeDialog)
         openDialog.setNameFilter('Extract to...')
 
-        try:
-            selected = openDialog.getExistingDirectory()
-        except IndexError:
-            raise IndexError
-        else:
-            return selected
+        selected = openDialog.getExistingDirectory()
+        if not os.path.exists(selected):
+            raise NotADirectoryError('Path not selected or it doesn\'t exist')
+        return selected
 
     @classmethod
     def overwriteFilePrompt(cls, filename, target_dir_name, are_multiple_files):
@@ -100,7 +92,14 @@ class Extractor:
             apply_to_all = QCheckBox()
             apply_to_all.setText('Apply to all')
             prompt.setCheckBox(apply_to_all)
+        else:
+            apply_to_all = None
 
         response = prompt.exec()
         print(response)
-        return response
+        if apply_to_all:
+            apply_all_select = apply_to_all.isChecked()
+        else:
+            apply_all_select = False
+
+        return response, apply_all_select
