@@ -3,6 +3,7 @@ from plaguevfs import VfsArchive
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QToolBar, QLineEdit, QPushButton, QFileDialog
 from PySide6.QtGui import QAction
 from PySide6.QtCore import Qt
+from .extractor import Extractor
 from .vfs_tree import VfsTree
 
 
@@ -80,8 +81,8 @@ class UI(QMainWindow):
     def createOpenArchiveWindow(self):
         def open_from_file():
             openDialog.exec()
-            selected = openDialog.selectedFiles()[0]
             try:
+                selected = openDialog.selectedFiles()[0]
                 self.archive = VfsArchive(selected)
                 self.tree, self.treeItems = self.createTreeView(self.archive)
             except IndexError:
@@ -99,7 +100,6 @@ class UI(QMainWindow):
 
         openDialog = QFileDialog(self)
         openDialog.setFileMode(QFileDialog.ExistingFile)
-        openDialog.setViewMode(QFileDialog.Detail)
         openDialog.setNameFilter('VFS archives (*.vfs)')
 
         openArchiveButton.clicked.connect(open_from_file)
@@ -140,10 +140,6 @@ class UI(QMainWindow):
         return new_vfs_tree, all_items_in_tree
 
     def extractSelected(self):
-        if len(self.tree.selectedItems()) > 10:
-            pass
-        # TODO: spawn "Are you sure you want to extract N items?" popup
-
         extract_files = []
         extract_dirs = []
         for item in self.tree.selectedItems():
@@ -156,27 +152,4 @@ class UI(QMainWindow):
             for i in range(directory.childCount()):
                 extract_files.append(directory.child(i))
 
-        for file_entry in extract_files:
-            def verify_path(embed_file, file_tree_item):
-                if not embed_file.parent.parent and file_tree_item.parent() == self.treeItems[0]:
-                    """ Check for files in top-level directories/trees """
-                    return True
-
-                next_tree_parent = file_tree_item.parent()
-                next_embed_parent = embed_file.parent
-                i = 0
-                while next_tree_parent and next_embed_parent:
-                    if next_tree_parent.text(0) != next_embed_parent.name:
-                        return False
-                    else:
-                        next_tree_parent = next_tree_parent.parent()
-                        next_embed_parent = next_embed_parent.parent
-
-                return True
-
-            candidates = self.archive.root.search(file_entry.text(0)).values()
-            for candidate in candidates:
-                if verify_path(candidate, file_entry):
-                    candidate.extract(create_subdir_on_disk=True)
-
-        # TODO: 'extract right here' and 'extract by path ./xxx/yyy/etc' should be separate options in the GUI
+        Extractor.extractSelected(extract_files, self)
