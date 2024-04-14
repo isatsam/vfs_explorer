@@ -73,8 +73,6 @@ class Directory:
                 look_in_directory(subdir, search_for, found)
             return found
 
-        if type(request) is not bytes:
-            request = codecs.encode(request, self.encoding)
         if not results:
             results = {}
         results = look_in_directory(self, request, results)

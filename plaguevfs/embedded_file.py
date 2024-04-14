@@ -10,10 +10,9 @@ class EmbeddedFile:
         (self.name, self.length, self.start, self.end, self.timestamp) = self.read_self(parent.contents)
 
     def __str__(self):
-        return codecs.decode(self.name, self.parent.encoding)
+        return self.name
 
-    @staticmethod
-    def read_self(section):
+    def read_self(self, section):
         def to_datetime(filetime: int) -> datetime:
             """
             Converts a Windows filetime number to a Python datetime. The new
@@ -32,7 +31,7 @@ class EmbeddedFile:
             return datetime.utcfromtimestamp(s).replace(microsecond=(ns100 // 10))
 
         filename_len = ord(section.read(1))
-        filename = section.read(filename_len)
+        filename = section.read(filename_len).decode(self.parent.encoding)
         length = struct.unpack('<i', section.read(4))[0]
         start = struct.unpack('<i', section.read(4))[0]
         end = start+length
@@ -51,16 +50,16 @@ class EmbeddedFile:
         self.parent.contents.seek(self.start)
         data = self.parent.contents.read(self.length)
 
-        out = codecs.decode(self.name, encoding=self.parent.encoding, errors='strict')
-
         if create_subdir_on_disk:
             if self.parent.parent and '.' in self.parent.name:
                 target_dir = self.parent.name[:self.parent.name.rfind('.')]
             else:
                 target_dir = self.parent.name
-            out = os.path.join(out_path, target_dir, out)
+            out = os.path.join(out_path, target_dir, self.name)
             if not os.path.exists(os.path.join(out_path, target_dir)):
                 os.mkdir(os.path.join(out_path, target_dir))
+        else:
+            out = self.name
 
         with open(out, 'wb') as f:
             f.write(data)
