@@ -1,4 +1,7 @@
-import plaguevfs as pvfs
+import sys
 import vfs_toolkit
 
-vfs_toolkit.start('./archives/Geometries.vfs')
+if len(sys.argv) > 1:
+    vfs_toolkit.start(sys.argv[1])
+else:
+    vfs_toolkit.start()
