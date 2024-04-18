@@ -43,14 +43,16 @@ class EmbeddedFile:
     def extract(self, create_subdir_on_disk=False, out_path=os.getcwd()):
         """
         Extracts current file.
-        :param create_subdir_on_disk: whether the file should be written to a subdirectory or just to the working dir
-        :param out_path: path where the new directory will be created
+        :param create_subdir_on_disk: whether a new subdirectory (named after the file's parent archive)
+            should be created for extracting the files. If the directory already exists, will extract to that directory
+        :param out_path: path in which the file will be created. If create_subdir_on_disk, the new subdir will be
+            created in that path
         :return: nothing
         """
         self.parent.contents.seek(self.start)
         data = self.parent.contents.read(self.length)
 
-        if create_subdir_on_disk:
+        if create_subdir_on_disk:               # if create new subdirectory
             if self.parent.parent and '.' in self.parent.name:
                 target_dir = self.parent.name[:self.parent.name.rfind('.')]
             else:
@@ -58,7 +60,9 @@ class EmbeddedFile:
             out = os.path.join(out_path, target_dir, self.name)
             if not os.path.exists(os.path.join(out_path, target_dir)):
                 os.mkdir(os.path.join(out_path, target_dir))
-        else:
+        elif out_path:                          # if extract to specified path
+            out = os.path.join(out_path, self.name)
+        else:                                   # if no new subdir and no path provided
             out = self.name
 
         with open(out, 'wb') as f:

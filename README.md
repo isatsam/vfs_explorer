@@ -28,7 +28,7 @@ VFS Toolkit and plaguevfs both follow [PEP-8 (aka Style Guide for Python Code)](
   - [x] Extract directories by selecting the directory's name in the tree
 - [X] More reliable file search (ensure we always get the correct file and not a file with the same name from another subdirectory)
 - [X] "Open archive" file prompt
-- [ ] "Extract to" file prompt
+- [X] "Extract to" file prompt
 - [ ] Provide pre-built binaries
 - [ ] "Extract as" button, converting files to more common formats (for ex. a .tga named .tex -> .png)
 - [X] Search in files
