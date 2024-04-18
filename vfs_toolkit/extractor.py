@@ -23,10 +23,6 @@ class Extractor:
 
     @classmethod
     def extractSelected(cls, extract_files, ui_obj):
-        if len(extract_files) > 10:
-            pass
-        # TODO: spawn "Are you sure you want to extract N items?" popup
-
         try:
             target_dir_info = QFileInfo(cls.spawnTargetPathPrompt(ui_obj) + '/')
             target_path = target_dir_info.absolutePath()
@@ -44,6 +40,7 @@ class Extractor:
         multiple_files = len(extract_objects) > 1
         user_response = None
         apply_all_selected = False
+        successfully_extracted_filenames = []
         for obj in extract_objects:
             target_filepath = os.path.join(target_path, obj.name)
             if os.path.isfile(target_filepath):
@@ -60,8 +57,10 @@ class Extractor:
                         continue
 
             obj.extract(out_path=target_path)
+            successfully_extracted_filenames.append(obj.name)
             print(f'Extracted {obj.name} to {target_path}')
-    # TODO: 'extract right here' and 'extract by path ./xxx/yyy/etc' should be separate options in the GUI
+
+        return successfully_extracted_filenames, target_path
 
     @classmethod
     def spawnTargetPathPrompt(cls, ui_obj):
