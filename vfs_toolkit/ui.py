@@ -1,11 +1,12 @@
-import os
 from plaguevfs import VfsArchive
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QToolBar,
-                               QLineEdit, QPushButton, QFileDialog, QStatusBar)
-from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QStatusBar)
 from PySide6.QtCore import Qt
 from .extractor import Extractor
 from .vfs_tree import VfsTree
+from .toolbar import UpperToolBar
+from .search import Search
+
+STATUSBAR_TIMEOUT = 3500
 
 
 class UI(QMainWindow):
@@ -19,7 +20,7 @@ class UI(QMainWindow):
         # create toolbars
         self.mainToolbar = self.createToolbar()
         self.addToolBarBreak()
-        self.searchToolbar = self.createSearchBar()
+        self.searchToolbar = self.createSearch()
 
         # create a dummy widget and put the main layout in it
         self.childLayout = QVBoxLayout()
@@ -43,49 +44,18 @@ class UI(QMainWindow):
         self.show()
 
     def createToolbar(self):
-        toolbar = QToolBar()
-        toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
+        toolBar = UpperToolBar()
+        self.addToolBar(toolBar)
+        return toolBar
 
-        buttonAction = QAction("Extract selected files", self)
-        buttonAction.triggered.connect(self.extractSelected)
-
-        toolbar.setFloatable(False)
-        toolbar.setMovable(False)
-        toolbar.addAction(buttonAction)
-
-        self.addToolBar(toolbar)
-        return toolbar
-
-    def createSearchBar(self):
-        searchBar = QLineEdit()
-        searchBar.setPlaceholderText("Search")
-        searchBar.textChanged.connect(self.showSearchResults)
-
-        toolbar = QToolBar()
-        toolbar.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
-        toolbar.setFloatable(False)
-        toolbar.setMovable(False)
-        toolbar.addWidget(searchBar)
-
-        self.addToolBar(toolbar)
-        return toolbar
-
-    def showSearchResults(self, text):
-        found = []
-        for item in self.treeItems:
-            item.setHidden(True)
-
-        for item in self.treeItems:
-            if text.lower() in item.text(0).lower():
-                found.append(item)
-
-        for item in found:
-            item.setHidden(False)
-            next_parent = item.parent()
-            while next_parent is not None:
-                next_parent.setHidden(False)
-                next_parent.setExpanded(True)
-                next_parent = next_parent.parent()
+    def createSearch(self):
+        searchObj = Search(self)
+        searchWidget = searchObj.createSearchWidget()
+        '''Search object has bigger control over the general UI than others,
+        so its creation is entirely controlled by .createSearchWidget()
+        method, including adding itself to the UI. Also, we might want to
+        change its widget type later on.'''
+        return searchWidget
 
     def createStatusBar(self):
         statusBar = QStatusBar()
@@ -150,11 +120,12 @@ class UI(QMainWindow):
             self.childLayout.removeWidget(widget)
 
         self.childLayout.addWidget(new_vfs_tree)
-        self.statusBar.showMessage(f'Opened {archive.name} containing {len(all_items_in_tree)} files', 2000)
+        self.statusBar.showMessage(f'Opened {archive.name} containing {len(all_items_in_tree)} files',
+                                   STATUSBAR_TIMEOUT)
 
         return new_vfs_tree, all_items_in_tree
 
-    def extractSelected(self):
+    def extractSelectedFiles(self):
         extract_files = []
         extract_dirs = []
         for item in self.tree.selectedItems():
