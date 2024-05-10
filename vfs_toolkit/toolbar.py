@@ -8,14 +8,21 @@ class UpperToolBar(QToolBar):
         super().__init__()
 
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
-
-        buttonAction = QAction("Extract selected files", self)
-        buttonAction.triggered.connect(self.pretendToExtract)
-
         self.setFloatable(False)
         self.setMovable(False)
-        self.addAction(buttonAction)
 
-    @staticmethod
-    def pretendToExtract():
-        print('Extracted... blah blah')
+        # buttonAction = QAction("Extract selected files", self)
+        # buttonAction.triggered.connect(self.startExtraction)
+
+        self.searchButton = QAction("Show search", self)
+        self.searchButton.triggered.connect(self.showSearchBar)
+        self.addAction(self.searchButton)
+
+    def showSearchBar(self):
+        bar = self.parent().searchToolbar
+        if bar.isHidden():
+            bar.show()
+            self.searchButton.setText("Hide search")
+        else:
+            bar.hide()
+            self.searchButton.setText("Show search")

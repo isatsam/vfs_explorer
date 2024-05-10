@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QHeaderView
+from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QHeaderView, QMenu
 import plaguevfs as pvfs
 from datetime import datetime
 
@@ -9,12 +9,14 @@ class VfsTree(QTreeWidget):
     def __init__(self, archive):
         super().__init__()
         self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
-        self.selectionModel().selectionChanged.connect(self.test_action)
+        # self.selectionModel().selectionChanged.connect(self.test_action)
 
-        self.CreateArchiveTreeView(archive)
+        self.archive = archive
+        self.CreateArchiveTreeView(self.archive)
 
-    def test_action(self):
-        pass
+    @staticmethod
+    def test_action():
+        print('something just happened')
 
     def CreateArchiveTreeView(self, archive):
         def add_dir_to_tree(items_list, directory: pvfs.Directory):
