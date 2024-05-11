@@ -22,57 +22,93 @@ class Extractor:
         return True
 
     @classmethod
-    def extractSelectedFiles(cls, ui_obj):
+    def extractSelectedFiles(cls, ui_obj, dry_run=False):
         try:
             target_dir_info = QFileInfo(cls.spawnTargetPathPrompt(ui_obj) + '/')
-            target_path = target_dir_info.absolutePath()
+            starter_target_path = target_dir_info.absolutePath()
         except NotADirectoryError as e:
             print(e)
-            return
 
-        extract_files = []
+        print(f"Dry run: {dry_run}")
+
+        def traverse_directory(directory, list_of_files):
+            for i in range(directory.childCount()):
+                if directory.child(i).childCount() == 0:
+                    list_of_files.append(directory.child(i))
+                else:
+                    list_of_files = traverse_directory(directory.child(i), list_of_files)
+            return list_of_files
+
+        files_to_extract_from_tree = []
         extract_dirs = []
         for item in ui_obj.tree.selectedItems():
             if item.childCount() == 0:
-                extract_files.append(item)
+                files_to_extract_from_tree.append(item)
             else:
                 extract_dirs.append(item)
 
         for directory in extract_dirs:
-            for i in range(directory.childCount()):
-                extract_files.append(directory.child(i))
+            files_to_extract_from_tree = traverse_directory(directory, files_to_extract_from_tree)
 
+        map_of_directories = {'': []}
         extract_objects = []
-        for file_entry in extract_files:
-            candidates = ui_obj.archive.root.search(file_entry.text(0)).values()
+        for file_in_tree in files_to_extract_from_tree:
+            candidates = ui_obj.archive.root.search(file_in_tree.text(0)).values()
             for candidate in candidates:
-                if cls.get_embed_file_vfs_path(candidate, file_entry, ui_obj):
+                if cls.get_embed_file_vfs_path(candidate, file_in_tree, ui_obj) and candidate not in extract_objects:
                     extract_objects.append(candidate)
+                    if candidate.parent.parent is None:
+                        map_of_directories[''].append(candidate)
+                    else:
+                        parent = candidate.parent
+                        new_path = []
+                        while parent.parent is not None:
+                            new_path.append(parent.name)
+                            new_path_dict_key = "/".join(new_path)
+                            parent = parent.parent
+                        if new_path_dict_key not in map_of_directories.keys():
+                            map_of_directories[new_path_dict_key] = []
+                        map_of_directories[new_path_dict_key].append(candidate)
+                    break
 
         multiple_files = len(extract_objects) > 1
         user_response = None
         apply_all_selected = False
         successfully_extracted_filenames = []
-        for obj in extract_objects:
-            target_filepath = os.path.join(target_path, obj.name)
-            if os.path.isfile(target_filepath):
-                if not apply_all_selected:
-                    display_path = os.path.basename(target_path)
-                    user_response, apply_all_selected = cls.overwriteFilePrompt(obj.name, display_path, multiple_files)
+        for path in map_of_directories:
+            """ Try to create a subdirectory for files not from the root of the tree, if that is needed """
+            target_dir = os.path.join(starter_target_path, path)
+            if not os.path.exists(target_dir):
+                if not dry_run:
+                    os.mkdir(target_dir)
+                print(f"Created directory {target_dir}")
 
-                match user_response:
-                    case 16384:     # Yes, overwrite
-                        pass
-                    case 4194304:   # User cancelled, escape the loop
-                        break
-                    case _:         # No, don't overwrite this file (go back to the loop)
-                        continue
+            for obj in map_of_directories[path]:
+                """ Check if file already exists """
+                target_filepath = os.path.join(target_dir, obj.name)
+                if os.path.isfile(target_filepath):
+                    if not apply_all_selected:
+                        display_path = os.path.basename(starter_target_path)
+                        user_response, apply_all_selected = cls.overwriteFilePrompt(obj.name, display_path,
+                                                                                    multiple_files)
 
-            obj.extract(out_path=target_path)
-            successfully_extracted_filenames.append(obj.name)
-            print(f'Extracted {obj.name} to {target_path}')
+                    match user_response:
+                        case 16384:  # Yes, overwrite
+                            pass
+                        case 4194304:  # User cancelled, escape the loop
+                            break
+                        case _:  # No, don't overwrite this file (go back to the loop)
+                            continue
 
-        return successfully_extracted_filenames, target_path
+                if not dry_run:
+                    obj.extract(out_path=target_dir)
+
+                if obj.name in successfully_extracted_filenames:
+                    print(f"There was a double: {obj.name}")
+                successfully_extracted_filenames.append(obj.name)
+
+        print(f"Extracted {len(successfully_extracted_filenames)} files to {starter_target_path}")
+        return successfully_extracted_filenames, starter_target_path
 
     @classmethod
     def spawnTargetPathPrompt(cls, ui_obj):
@@ -107,7 +143,7 @@ class Extractor:
             apply_to_all = None
 
         response = prompt.exec()
-        print(response)
+        print(f"User choice: {response}")
         if apply_to_all:
             apply_all_select = apply_to_all.isChecked()
         else:

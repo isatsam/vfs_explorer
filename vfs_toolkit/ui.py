@@ -121,24 +121,26 @@ class UI(QMainWindow):
             extract_action = menu.addAction("&Extract whole directory")
         else:
             extract_action = menu.addAction("&Extract selected")
+        extract_dummy = menu.addAction("&Extract a dry run (won't write files to disk)")
         menu.addSeparator()
         unselect_action = menu.addAction("&Clear selection")
         action = menu.exec_(self.mapToGlobal(point))
         if action == extract_action:
             self.passSelectedFilesToExtractor()
+        elif action == extract_dummy:
+            self.passSelectedFilesToExtractor(dry_run=True)
         elif action == unselect_action:
             self.tree.clearSelection()
         else:
             pass
 
-    def passSelectedFilesToExtractor(self):
-        extracted_files, extracted_to_path = Extractor.extractSelectedFiles(self)
+    def passSelectedFilesToExtractor(self, dry_run=False):
+        extracted_files, extracted_to_path = Extractor.extractSelectedFiles(self, dry_run)
 
         # putting together a statusbar message, based on things .extractSelected() communicated back to us
         msg = f'Extracted to {extracted_to_path}: '
         for i in range(0, min(3, len(extracted_files))):
             text = extracted_files[i]
-            print('175: ', text)
             msg += f' {text}'
             if i != min(3, len(extracted_files))-1:
                 msg += ','
