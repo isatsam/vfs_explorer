@@ -22,19 +22,31 @@ class Extractor:
         return True
 
     @classmethod
-    def extractSelected(cls, extract_files, archive, parent_obj):
+    def extractSelectedFiles(cls, ui_obj):
         try:
-            target_dir_info = QFileInfo(cls.spawnTargetPathPrompt(parent_obj) + '/')
+            target_dir_info = QFileInfo(cls.spawnTargetPathPrompt(ui_obj) + '/')
             target_path = target_dir_info.absolutePath()
         except NotADirectoryError as e:
             print(e)
             return
 
+        extract_files = []
+        extract_dirs = []
+        for item in ui_obj.tree.selectedItems():
+            if item.childCount() == 0:
+                extract_files.append(item)
+            else:
+                extract_dirs.append(item)
+
+        for directory in extract_dirs:
+            for i in range(directory.childCount()):
+                extract_files.append(directory.child(i))
+
         extract_objects = []
         for file_entry in extract_files:
-            candidates = archive.root.search(file_entry.text(0)).values()
+            candidates = ui_obj.archive.root.search(file_entry.text(0)).values()
             for candidate in candidates:
-                if cls.get_embed_file_vfs_path(candidate, file_entry, parent_obj):
+                if cls.get_embed_file_vfs_path(candidate, file_entry, ui_obj):
                     extract_objects.append(candidate)
 
         multiple_files = len(extract_objects) > 1

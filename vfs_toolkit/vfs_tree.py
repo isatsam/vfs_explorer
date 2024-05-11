@@ -13,6 +13,8 @@ class VfsTree(QTreeWidget):
 
         self.archive = archive
         self.CreateArchiveTreeView(self.archive)
+        self.itemAt(0, 0).setExpanded(True)
+        # self.setRootIndex(self.indexFromItem(self.itemAt(0, 0)))
 
     @staticmethod
     def test_action():
@@ -59,4 +61,3 @@ class VfsTree(QTreeWidget):
         items = []
         items = add_dir_to_tree(items, archive.root)
         self.insertTopLevelItems(0, items)
-

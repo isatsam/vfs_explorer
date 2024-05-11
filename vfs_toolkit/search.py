@@ -5,14 +5,14 @@ from PySide6.QtCore import Qt
 class Search(QLineEdit):
     def __init__(self, parent_obj):
         self.parent = parent_obj
+
         super().__init__()
+
         self.setPlaceholderText("Search")
         self.textChanged.connect(self.showSearchResults)
 
-    def createSearchWidget(self):
-        newWidget = SearchWidget(self)
-        self.parent.addToolBar(newWidget)
-        return newWidget
+        self.searchWidget = SearchWidget(self)
+        self.searchWidget.hide()
 
     def showSearchResults(self, text):
         treeItems = self.parent.treeItems

@@ -1,12 +1,11 @@
 from plaguevfs import VfsArchive
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QStatusBar, QMenu)
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu)
 from PySide6.QtCore import Qt
 from .extractor import Extractor
 from .vfs_tree import VfsTree
 from .toolbar import UpperToolBar
 from .search import Search
-
-STATUSBAR_TIMEOUT = 3500
+from .status import StatusBar
 
 
 class UI(QMainWindow):
@@ -18,10 +17,11 @@ class UI(QMainWindow):
         self.resize(self.window_size[0], self.window_size[1])
 
         # create toolbars
-        self.mainToolbar = self.createToolbar()
+        self.toolBar = UpperToolBar()
+        self.addToolBar(self.toolBar)
         self.addToolBarBreak()
-        self.searchToolbar = self.createSearch()
-        self.searchToolbar.hide()
+        self.searchToolBar = Search(self).searchWidget
+        self.addToolBar(self.searchToolBar)
 
         # create a dummy widget and put the main layout in it
         self.childLayout = QVBoxLayout()
@@ -33,7 +33,8 @@ class UI(QMainWindow):
         self.customContextMenuRequested.connect(self.callContextMenu)
 
         # create statusbar
-        self.statusBar = self.createStatusBar()
+        self.statusBar = StatusBar()
+        self.setStatusBar(self.statusBar)
 
         self.archive = archive
 
@@ -42,31 +43,18 @@ class UI(QMainWindow):
             self.tree, self.treeItems = self.createTreeView(self.archive)
             self.openFileDialog = None
         else:    # create an "Open archive" button and add it to the layout
-            self.createOpenArchiveWindow()
+            self.createEmptyWindow()
             self.tree, self.treeItems = (None, None)
 
         self.show()
 
-    def createToolbar(self):
-        toolBar = UpperToolBar(self)
-        self.addToolBar(toolBar)
-        return toolBar
+    def setUiDisabled(self, locked: bool):
+        if type(locked) is not bool:
+            raise TypeError
+        self.toolBar.setDisabled(locked)
+        self.searchToolBar.setDisabled(locked)
 
-    def createSearch(self):
-        searchObj = Search(self)
-        searchWidget = searchObj.createSearchWidget()
-        '''Search object has bigger control over the general UI than others,
-        so its creation is entirely controlled by .createSearchWidget()
-        method, including adding itself to the UI. Also, we might want to
-        change its widget type later on.'''
-        return searchWidget
-
-    def createStatusBar(self):
-        statusBar = QStatusBar()
-        self.setStatusBar(statusBar)
-        return statusBar
-
-    def createOpenArchiveWindow(self):
+    def createEmptyWindow(self):
         def open_from_file():
             openDialog.exec()
             try:
@@ -79,8 +67,7 @@ class UI(QMainWindow):
                 print(e)
 
         self.setWindowTitle('VFS Toolkit')
-        self.mainToolbar.setDisabled(True)
-        self.searchToolbar.setDisabled(True)
+        self.setUiDisabled(True)
 
         openArchiveButton = QPushButton('&Open', self)
         openArchiveButton.setText('Open archive')
@@ -113,8 +100,7 @@ class UI(QMainWindow):
             return all_items
 
         self.setWindowTitle(archive.name)
-        self.mainToolbar.setDisabled(False)
-        self.searchToolbar.setDisabled(False)
+        self.setUiDisabled(False)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
 
         new_vfs_tree = VfsTree(archive)
@@ -125,8 +111,7 @@ class UI(QMainWindow):
             self.childLayout.removeWidget(widget)
 
         self.childLayout.addWidget(new_vfs_tree)
-        self.statusBar.showMessage(f'Opened {archive.name} containing {len(all_items_in_tree)} files',
-                                   STATUSBAR_TIMEOUT)
+        self.statusBar.showMessage(f'Opened {archive.name} containing {len(all_items_in_tree)} files')
 
         return new_vfs_tree, all_items_in_tree
 
@@ -140,28 +125,14 @@ class UI(QMainWindow):
         unselect_action = menu.addAction("&Clear selection")
         action = menu.exec_(self.mapToGlobal(point))
         if action == extract_action:
-            self.extractSelectedFiles()
+            self.passSelectedFilesToExtractor()
         elif action == unselect_action:
             self.tree.clearSelection()
         else:
             pass
 
-    def extractSelectedFiles(self):
-        extract_files = []
-        extract_dirs = []
-        for item in self.tree.selectedItems():
-            if item.childCount() == 0:
-                extract_files.append(item)
-            else:
-                extract_dirs.append(item)
-
-        for directory in extract_dirs:
-            for i in range(directory.childCount()):
-                extract_files.append(directory.child(i))
-
-        extracted_files, extracted_to_path = Extractor.extractSelected(extract_files=extract_files,
-                                                                       archive=self.archive,
-                                                                       parent_obj=self)
+    def passSelectedFilesToExtractor(self):
+        extracted_files, extracted_to_path = Extractor.extractSelectedFiles(self)
 
         # putting together a statusbar message, based on things .extractSelected() communicated back to us
         msg = f'Extracted to {extracted_to_path}: '
@@ -173,4 +144,4 @@ class UI(QMainWindow):
                 msg += ','
         if len(extracted_files) > 3:
             msg += f' and {len(extracted_files)-3} more'
-        self.statusBar.showMessage(msg, STATUSBAR_TIMEOUT)
+        self.statusBar.showMessage(msg)

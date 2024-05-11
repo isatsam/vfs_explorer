@@ -19,7 +19,7 @@ class UpperToolBar(QToolBar):
         self.addAction(self.searchButton)
 
     def showSearchBar(self):
-        bar = self.parent().searchToolbar
+        bar = self.parent().searchToolBar
         if bar.isHidden():
             bar.show()
             self.searchButton.setText("Hide search")
