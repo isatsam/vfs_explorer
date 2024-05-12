@@ -22,7 +22,7 @@ class VfsTree(QTreeWidget):
 
     def CreateArchiveTreeView(self, archive):
         def add_dir_to_tree(items_list, directory: pvfs.Directory):
-            entry = QTreeWidgetItem([directory.name])
+            entry = VfsTreeItemDirectory([directory.name], directory)
             for subdir in directory.subdirs:
                 entry.addChildren(add_dir_to_tree(items_list, subdir))
             for file in directory.files.values():
@@ -46,7 +46,7 @@ class VfsTree(QTreeWidget):
                 # FIXME: this ridiculous decimal precision
                 size = str(size[:len(size[:size.rfind('.')]) + decimals]) + ' ' + unitname
 
-                child = QTreeWidgetItem([str(file), size, time])
+                child = VfsTreeItemFile([str(file), size, time], file)
                 entry.addChild(child)
             items_list.append(entry)
             return items_list
@@ -61,3 +61,15 @@ class VfsTree(QTreeWidget):
         items = []
         items = add_dir_to_tree(items, archive.root)
         self.insertTopLevelItems(0, items)
+
+
+class VfsTreeItemFile(QTreeWidgetItem):
+    def __init__(self, other, embeddedFile):
+        super().__init__(other)
+        self.embeddedFile = embeddedFile
+
+
+class VfsTreeItemDirectory(QTreeWidgetItem):
+    def __init__(self, other, directory):
+        super().__init__(other)
+        self.directory = directory
