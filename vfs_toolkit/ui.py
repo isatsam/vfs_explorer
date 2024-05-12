@@ -5,6 +5,7 @@ from .extractor import Extractor
 from .vfs_tree import VfsTree
 from .menubar import MenuBar
 from .search import Search
+from .status import StatusBar
 
 
 class UI(QMainWindow):
@@ -32,7 +33,7 @@ class UI(QMainWindow):
         self.customContextMenuRequested.connect(self.callContextMenu)
 
         # create statusbar
-        self.statusBar = QStatusBar()
+        self.statusBar = StatusBar()
         self.setStatusBar(self.statusBar)
 
         self.archive = archive
@@ -148,14 +149,4 @@ class UI(QMainWindow):
 
     def passSelectedFilesToExtractor(self, dry_run=False):
         extracted_files, extracted_to_path = Extractor.extractSelectedFiles(self, dry_run)
-
-        # putting together a statusbar message, based on things .extractSelected() communicated back to us
-        msg = f'Extracted to {extracted_to_path}: '
-        for i in range(0, min(3, len(extracted_files))):
-            text = extracted_files[i]
-            msg += f' {text}'
-            if i != min(3, len(extracted_files))-1:
-                msg += ','
-        if len(extracted_files) > 3:
-            msg += f' and {len(extracted_files)-3} more'
-        self.statusBar.showMessage(msg, timeout=3500)
+        self.statusBar.createExtractedMessage(extracted_files=extracted_files, extracted_to_path=extracted_to_path)
