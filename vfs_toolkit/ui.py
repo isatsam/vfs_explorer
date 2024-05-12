@@ -47,8 +47,6 @@ class UI(QMainWindow):
             self.createEmptyWindow()
             self.tree, self.treeItems = (None, None)
 
-        self.tree.selectionModel().selectionChanged.connect(self.menuBar.toggleExtractSelected)
-
         self.show()
 
     def setUiDisabled(self, locked: bool):
@@ -57,18 +55,23 @@ class UI(QMainWindow):
         self.menuBar.setDisabled(locked)
         self.searchToolBar.setDisabled(locked)
 
-    def createEmptyWindow(self):
-        def open_from_file():
-            openDialog.exec()
-            try:
-                selected = openDialog.selectedFiles()[0]
-                self.archive = VfsArchive(selected)
-                self.tree, self.treeItems = self.createTreeView(self.archive)
-            except IndexError:
-                pass
-            except Exception as e:
-                print(e)
+    def openFromFile(self):
+        openDialog = QFileDialog(self)
+        openDialog.setFileMode(QFileDialog.ExistingFile)
+        openDialog.setNameFilter('VFS archives (*.vfs)')
+        openDialog.exec()
+        try:
+            selected = openDialog.selectedFiles()[0]
+            self.archive = VfsArchive(selected)
+            self.tree, self.treeItems = self.createTreeView(self.archive)
+        except IndexError:
+            pass
+        except Exception as e:
+            print(e)
 
+        return openDialog
+
+    def createEmptyWindow(self):
         self.setWindowTitle('VFS Toolkit')
         self.setUiDisabled(True)
 
@@ -76,11 +79,7 @@ class UI(QMainWindow):
         openArchiveButton.setText('Open archive')
         openArchiveButton.setMinimumSize(90, 40)
 
-        openDialog = QFileDialog(self)
-        openDialog.setFileMode(QFileDialog.ExistingFile)
-        openDialog.setNameFilter('VFS archives (*.vfs)')
-
-        openArchiveButton.clicked.connect(open_from_file)
+        openDialog = openArchiveButton.clicked.connect(self.openFromFile)
 
         self.childLayout.addWidget(openArchiveButton, alignment=Qt.AlignCenter)
 
@@ -115,6 +114,8 @@ class UI(QMainWindow):
 
         self.childLayout.addWidget(new_vfs_tree)
         self.statusBar.showMessage(f'Opened {archive.name} containing {len(all_items_in_tree)} files')
+
+        new_vfs_tree.selectionModel().selectionChanged.connect(self.menuBar.toggleExtractSelected)
 
         return new_vfs_tree, all_items_in_tree
 
