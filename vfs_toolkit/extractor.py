@@ -52,7 +52,6 @@ class Extractor:
         #   extracting at the root but in a deeper level subdirectory, we should be creating subdirectories
         #   relative to that. Might be easier if we implement EmbeddedFile to know its full path first?
         map_of_directories = {'': []}
-        extract_objects = []
         for file in extract_files:
             if file.parent.parent is None:
                 map_of_directories[''].append(file)
@@ -67,7 +66,7 @@ class Extractor:
                     map_of_directories[new_path_dict_key] = []
                 map_of_directories[new_path_dict_key].append(file)
 
-        multiple_files = len(extract_objects) > 1
+        multiple_files = len(extract_files) > 1
         user_response = None
         apply_all_selected = False
         successfully_extracted_filenames = []
