@@ -24,6 +24,10 @@ class Extractor:
 
     @classmethod
     def extractSelectedFiles(cls, ui_obj, dry_run=False):
+        return cls.extractFiles(ui_obj.tree.selectedItems(), dry_run)
+
+    @classmethod
+    def extractFiles(cls, files: list, ui_obj, dry_run=False):
         try:
             target_dir_info = QFileInfo(cls.spawnTargetPathPrompt(ui_obj) + '/')
             starter_target_path = target_dir_info.absolutePath()
@@ -41,7 +45,7 @@ class Extractor:
             return list_of_files
 
         extract_files = []
-        for item in ui_obj.tree.selectedItems():
+        for item in files:
             if type(item) is VfsTreeItemDirectory:
                 extract_files += item.getEmbeddedFiles()
             else:

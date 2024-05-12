@@ -1,9 +1,10 @@
 from plaguevfs import VfsArchive
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu)
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu,
+                               QMenuBar)
 from PySide6.QtCore import Qt
 from .extractor import Extractor
 from .vfs_tree import VfsTree
-from .toolbar import UpperToolBar
+from .menubar import MenuBar
 from .search import Search
 from .status import StatusBar
 
@@ -17,8 +18,8 @@ class UI(QMainWindow):
         self.resize(self.window_size[0], self.window_size[1])
 
         # create toolbars
-        self.toolBar = UpperToolBar()
-        self.addToolBar(self.toolBar)
+        self.menuBar = MenuBar()
+        self.setMenuBar(self.menuBar)
         self.addToolBarBreak()
         self.searchToolBar = Search(self).searchWidget
         self.addToolBar(self.searchToolBar)
@@ -46,12 +47,14 @@ class UI(QMainWindow):
             self.createEmptyWindow()
             self.tree, self.treeItems = (None, None)
 
+        self.tree.selectionModel().selectionChanged.connect(self.menuBar.toggleExtractSelected)
+
         self.show()
 
     def setUiDisabled(self, locked: bool):
         if type(locked) is not bool:
             raise TypeError
-        self.toolBar.setDisabled(locked)
+        self.menuBar.setDisabled(locked)
         self.searchToolBar.setDisabled(locked)
 
     def createEmptyWindow(self):
