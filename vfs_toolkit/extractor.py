@@ -24,7 +24,7 @@ class Extractor:
 
     @classmethod
     def extractSelectedFiles(cls, ui_obj, dry_run=False):
-        return cls.extractFiles(ui_obj.tree.selectedItems(), dry_run)
+        return cls.extractFiles(files=ui_obj.tree.selectedItems(), ui_obj=ui_obj, dry_run=dry_run)
 
     @classmethod
     def extractFiles(cls, files: list, ui_obj, dry_run=False):

@@ -1,12 +1,10 @@
 from plaguevfs import VfsArchive
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu,
-                               QMenuBar)
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu)
 from PySide6.QtCore import Qt
 from .extractor import Extractor
 from .vfs_tree import VfsTree
 from .menubar import MenuBar
 from .search import Search
-from .status import StatusBar
 
 
 class UI(QMainWindow):
@@ -34,7 +32,7 @@ class UI(QMainWindow):
         self.customContextMenuRequested.connect(self.callContextMenu)
 
         # create statusbar
-        self.statusBar = StatusBar()
+        self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
 
         self.archive = archive
@@ -160,4 +158,4 @@ class UI(QMainWindow):
                 msg += ','
         if len(extracted_files) > 3:
             msg += f' and {len(extracted_files)-3} more'
-        self.statusBar.showMessage(msg)
+        self.statusBar.showMessage(msg, timeout=3500)

@@ -67,10 +67,10 @@ class MenuBar(QMenuBar):
         Extractor.extractSelectedFiles(ui_obj=self.parent(), dry_run=False)
 
     def extractArchive(self):
-        Extractor.extractFiles(files=[self.parent().tree.itemAt(0, 0)], ui_obj=self.parent(), dry_run=False)
+        Extractor.extractFiles(files=[self.parent().treeItems[0]], ui_obj=self.parent(), dry_run=False)
 
     def extractDryArchive(self):
-        Extractor.extractFiles(files=[self.parent().tree.itemAt(0, 0)], ui_obj=self.parent(), dry_run=True)
+        Extractor.extractFiles(files=[self.parent().treeItems[0]], ui_obj=self.parent(), dry_run=True)
 
     def unselectFiles(self):
         self.parent().tree.clearSelection()
