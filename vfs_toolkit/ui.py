@@ -85,6 +85,16 @@ class UI(QMainWindow):
 
         return openDialog
 
+    def clearLayout(self, layout):
+        if layout is not None:
+            while self.childLayout.count():
+                item = self.childLayout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                else:
+                    self.clearLayout(item.layout())
+
     def createTreeView(self, archive):
         def get_subtree_nodes(tree_widget_item):
             """Returns all QTreeWidgetItems in the subtree rooted at the given node."""

@@ -7,6 +7,9 @@ class MenuBar(QMenuBar):
     def __init__(self):
         super().__init__()
 
+        self.fileMenu, self.openNew, self.closeThis = self.createFileMenu()
+        self.addMenu(self.fileMenu)
+
         self.searchButton = QAction("Search", self)
         self.searchButton.triggered.connect(self.showSearchBar)
         self.addAction(self.searchButton)
@@ -15,13 +18,22 @@ class MenuBar(QMenuBar):
          self.unselectSelected) = self.createExtractMenu()
         self.addMenu(self.extractMenu)
 
-    def toggleExtractSelected(self):
-        if self.parent().tree.selectedItems():
-            self.extractSelected.setDisabled(False)
-            self.unselectSelected.setDisabled(False)
-        else:
-            self.extractSelected.setDisabled(True)
-            self.unselectSelected.setDisabled(True)
+    def createFileMenu(self):
+        menu = QMenu("&File")
+        open_new = menu.addAction("&Open...")
+        close_archive = menu.addAction("&Close archive")
+
+        open_new.triggered.connect(self.openNewAction)
+        close_archive.triggered.connect(self.closeArchiveAction)
+
+        return menu, open_new, close_archive
+
+    def openNewAction(self):
+        self.parent().openFromFile()
+
+    def closeArchiveAction(self):
+        self.parent().clearLayout(self.parent().childLayout)
+        self.parent().createEmptyWindow()
 
     def showSearchBar(self):
         bar = self.parent().searchToolBar
@@ -33,7 +45,6 @@ class MenuBar(QMenuBar):
             self.searchButton.setText("Search")
 
     def createExtractMenu(self):
-        ui = self.parent()
         menu = QMenu("&Extract...")
         extract_selected = menu.addAction("&Extract selected")
         extract_selected.setDisabled(True)
@@ -59,3 +70,11 @@ class MenuBar(QMenuBar):
 
     def extractDryArchive(self):
         Extractor.extractFiles(files=[self.parent().tree.itemAt(0, 0)], ui_obj=self.parent(), dry_run=True)
+
+    def toggleExtractSelected(self):
+        if self.parent().tree.selectedItems():
+            self.extractSelected.setDisabled(False)
+            self.unselectSelected.setDisabled(False)
+        else:
+            self.extractSelected.setDisabled(True)
+            self.unselectSelected.setDisabled(True)
