@@ -20,7 +20,7 @@ class VfsTree(QTreeWidget):
     def test_action():
         print('something just happened')
 
-    def CreateArchiveTreeView(self, archive):
+    def CreateArchiveTreeView(self, archive) -> None:
         def add_dir_to_tree(items_list, directory: pvfs.Directory):
             entry = VfsTreeItemDirectory([directory.name], directory)
             for subdir in directory.subdirs:
@@ -62,6 +62,17 @@ class VfsTree(QTreeWidget):
         items = add_dir_to_tree(items, archive.root)
         self.insertTopLevelItems(0, items)
 
+    def selectedFiles(self) -> list:
+        """ :return List containing EmbeddedFiles objects corresponding to self.selectedItems()"""
+        files = []
+        for item in self.selectedItems():
+            if type(item) is VfsTreeItemFile:
+                files.append(item)
+            elif type(item) is VfsTreeItemDirectory:
+                files += item.getEmbeddedFiles()
+
+        return files
+
 
 class VfsTreeItemFile(QTreeWidgetItem):
     def __init__(self, other, embeddedFile):
@@ -73,3 +84,16 @@ class VfsTreeItemDirectory(QTreeWidgetItem):
     def __init__(self, other, directory):
         super().__init__(other)
         self.directory = directory
+
+    def getEmbeddedFiles(self) -> list:
+        def iterate(directory):
+            new_list = []
+            for i in range(directory.childCount()):
+                if type(directory.child(i)) is VfsTreeItemDirectory:
+                    new_list += iterate(directory.child(i))
+                else:
+                    new_list.append(directory.child(i).embeddedFile)
+            return new_list
+
+        selected = iterate(self)
+        return selected

@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QCheckBox
 from PySide6.QtCore import QFileInfo
+from .vfs_tree import VfsTreeItemFile, VfsTreeItemDirectory
 import os.path
 
 
@@ -31,45 +32,40 @@ class Extractor:
 
         print(f"Dry run: {dry_run}")
 
-        def traverse_directory(directory, list_of_files):
+        def traverse_directory(directory, list_of_files=[]):
             for i in range(directory.childCount()):
-                if directory.child(i).childCount() == 0:
-                    list_of_files.append(directory.child(i))
+                if type(directory) is VfsTreeItemFile:
+                    list_of_files.append(directory.child(i).embeddedFile)
                 else:
                     list_of_files = traverse_directory(directory.child(i), list_of_files)
             return list_of_files
 
-        files_to_extract_from_tree = []
-        extract_dirs = []
+        extract_files = []
         for item in ui_obj.tree.selectedItems():
-            if item.childCount() == 0:
-                files_to_extract_from_tree.append(item)
+            if type(item) is VfsTreeItemDirectory:
+                extract_files += item.getEmbeddedFiles()
             else:
-                extract_dirs.append(item)
+                extract_files.append(item.embeddedFile)
 
-        for directory in extract_dirs:
-            files_to_extract_from_tree = traverse_directory(directory, files_to_extract_from_tree)
-
+        """ Hacky way to figure out if we need to create any subdirectories on the drive. """
+        # TODO: Currently we're creating subdirectories relatively to the root of the VFS. If we don't start
+        #   extracting at the root but in a deeper level subdirectory, we should be creating subdirectories
+        #   relative to that. Might be easier if we implement EmbeddedFile to know its full path first?
         map_of_directories = {'': []}
         extract_objects = []
-        for file_in_tree in files_to_extract_from_tree:
-            candidates = ui_obj.archive.root.search(file_in_tree.text(0)).values()
-            for candidate in candidates:
-                if cls.get_embed_file_vfs_path(candidate, file_in_tree, ui_obj) and candidate not in extract_objects:
-                    extract_objects.append(candidate)
-                    if candidate.parent.parent is None:
-                        map_of_directories[''].append(candidate)
-                    else:
-                        parent = candidate.parent
-                        new_path = []
-                        while parent.parent is not None:
-                            new_path.append(parent.name)
-                            new_path_dict_key = "/".join(new_path)
-                            parent = parent.parent
-                        if new_path_dict_key not in map_of_directories.keys():
-                            map_of_directories[new_path_dict_key] = []
-                        map_of_directories[new_path_dict_key].append(candidate)
-                    break
+        for file in extract_files:
+            if file.parent.parent is None:
+                map_of_directories[''].append(file)
+            else:
+                parent = file.parent
+                new_path = []
+                while parent.parent is not None:
+                    new_path.append(parent.name)
+                    new_path_dict_key = "/".join(new_path)
+                    parent = parent.parent
+                if new_path_dict_key not in map_of_directories.keys():
+                    map_of_directories[new_path_dict_key] = []
+                map_of_directories[new_path_dict_key].append(file)
 
         multiple_files = len(extract_objects) > 1
         user_response = None
@@ -107,7 +103,7 @@ class Extractor:
                     print(f"There was a double: {obj.name}")
                 successfully_extracted_filenames.append(obj.name)
 
-        print(f"Extracted {len(successfully_extracted_filenames)} files to {starter_target_path}")
+        print(f"Extracted {len(successfully_extracted_filenames)} file(s) to {starter_target_path}")
         return successfully_extracted_filenames, starter_target_path
 
     @classmethod
