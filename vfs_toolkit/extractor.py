@@ -33,6 +33,7 @@ class Extractor:
             starter_target_path = target_dir_info.absolutePath()
         except NotADirectoryError as e:
             print(e)
+            return None, None
 
         print(f"Dry run: {dry_run}")
 
@@ -120,7 +121,8 @@ class Extractor:
         selected = openDialog.getExistingDirectory()
         if not os.path.exists(selected):
             raise NotADirectoryError('Path not selected or it doesn\'t exist')
-        return selected
+        else:
+            return selected
 
     @classmethod
     def overwriteFilePrompt(cls, filename, target_dir_name, are_multiple_files):
