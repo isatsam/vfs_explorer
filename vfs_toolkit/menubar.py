@@ -59,6 +59,7 @@ class MenuBar(QMenuBar):
         extract_selected.triggered.connect(self.extractSelectedFiles)
         extract_all.triggered.connect(self.extractArchive)
         extract_dry_run.triggered.connect(self.extractDryArchive)
+        unselect_action.triggered.connect(self.unselectFiles)
 
         return menu, extract_selected, extract_all, extract_dry_run, unselect_action
 
@@ -70,6 +71,9 @@ class MenuBar(QMenuBar):
 
     def extractDryArchive(self):
         Extractor.extractFiles(files=[self.parent().tree.itemAt(0, 0)], ui_obj=self.parent(), dry_run=True)
+
+    def unselectFiles(self):
+        self.parent().tree.clearSelection()
 
     def toggleExtractSelected(self):
         if self.parent().tree.selectedItems():
