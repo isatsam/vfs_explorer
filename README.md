@@ -83,7 +83,7 @@ options:
 ```
 # Credits
 - somevideoguy and EGBland for their research on Pathologic's VFS format, available [here](https://github.com/somevideoguy/pathologic)  
-- Mario & Jon for through testing and catching many bugs, big and small
+- Mario & Jon for through testing and bug catching
 
 # License
 VFS Explorer and plaguevfs are both licensed under [GPL v3.0](./COPYING).
