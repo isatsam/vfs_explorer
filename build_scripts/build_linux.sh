@@ -20,7 +20,9 @@ pyinstaller \
 vfs_explorer.py \
 --name "$program_name" \
 --contents-directory "programresources" \
---noconsole
+--noconsole \
+--add-data=COPYING:License
+
 
 cd dist/
 tar czf $program_name.tar.gz $program_name/*

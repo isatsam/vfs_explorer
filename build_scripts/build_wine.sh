@@ -75,7 +75,8 @@ vfs_explorer.py \
 --contents-directory "programresources" \
 --noconsole \
 --icon build_scripts/icon.ico \
---version-file version_file.txt
+--version-file version_file.txt \
+--add-data=COPYING:License
 
 # cd dist/
 # 7za a $program_name.zip $program_name
