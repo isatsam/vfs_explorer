@@ -19,7 +19,7 @@ for more information on why this is required.
 4. Run VFS Explorer: `python vfs_explorer.py`. Or, optionally, specify a path to a VFS archive right-away: `python vfs_explorer.py /path/to/Archive.vfs`
 
 # Developing
-1. Clone this repository: `git clone git@github.com:hypnotiger/vfs_explorer.git`
+1. Clone this repository
 2. Move into the new directory: `cd vfs_explorer`
 3. Create and activate a virtual environment: `python -m venv venv`, then source it:
    - for Unix-based systems `source ./venv/bin/activate`
@@ -27,7 +27,7 @@ for more information on why this is required.
    - for Windows with cmd.exe: `venv\Scripts\activate.bat`
 5. Install the required packages: `pip install -r requirements.txt`  
 VFS Explorer and plaguevfs both follow [PEP-8 (aka Style Guide for Python Code)](https://peps.python.org/pep-0008/) to the best of their ability, 
-so an IDE that can automatically suggest or correct your code to that style would probably serve you best. 
+so an IDE that can automatically provide suggestions or correct your code by that style would probably serve you best. 
 For docstrings, reStructuredText format is used.
 ## Building
 VFS Explorer is built using [PyInstaller](https://pyinstaller.org/en/stable/). 
@@ -62,7 +62,8 @@ Adapt as needed for your targeted OS.
 
 # plaguevfs
 `plaguevfs` is a library for parsing, searching, and unpacking .VFS archives shipped with all versions of Pathologic 1
-(2004 to 2015), as well as handling individual files from inside the archives and subdirectories.
+(2004 to 2015), as well as handling individual files from inside the archives and subdirectories.  
+Although the code aims to be as self-explanatory as possible, there's currently no documentation for the library.
 ## cli.py
 cli.py is a command-line tool that wraps around plaguevfs library, providing its functional from the command line.
 ```py
