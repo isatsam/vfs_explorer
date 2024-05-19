@@ -48,11 +48,12 @@ class UI(QMainWindow):
 
         self.show()
 
-    def setUiDisabled(self, locked: bool):
-        if type(locked) is not bool:
+    def setUiDisabled(self, isDisabled: bool):
+        if type(isDisabled) is not bool:
             raise TypeError
-        self.menuBar.setDisabled(locked)
-        self.searchToolBar.setDisabled(locked)
+        for el in self.menuBar.disableAbleElements:
+            el.setDisabled(isDisabled)
+        self.searchToolBar.setDisabled(isDisabled)
 
     def openFromFile(self):
         openDialog = QFileDialog(self)

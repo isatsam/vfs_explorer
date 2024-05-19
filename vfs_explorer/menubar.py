@@ -23,6 +23,8 @@ class MenuBar(QMenuBar):
         self.aboutMenu = self.createAboutMenu()
         self.addMenu(self.aboutMenu)
 
+        self.disableAbleElements = [self.fileMenu, self.searchButton, self.extractMenu]
+
     def createFileMenu(self):
         menu = QMenu("&File")
         open_new = menu.addAction("&Open...")
