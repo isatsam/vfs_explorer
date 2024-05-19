@@ -101,7 +101,6 @@ class MenuBar(QMenuBar):
         about = menu.addAction("&About VFS Explorer")
 
         about.triggered.connect(self.showAboutMenu)
-        updates.triggered.connect(self.checkForUpdates)
 
         return menu
 
