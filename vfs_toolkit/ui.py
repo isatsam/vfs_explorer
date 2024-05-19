@@ -110,6 +110,8 @@ class UI(QMainWindow):
                 all_items.extend(get_subtree_nodes(top_item))
             return all_items
 
+        self.clearLayout(self.childLayout)
+
         self.setWindowTitle(archive.name)
         self.setUiDisabled(False)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
