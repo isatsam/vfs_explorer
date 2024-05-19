@@ -47,12 +47,13 @@ Adapt as needed for your targeted OS.
 - [X] Extract files from GUI
   - [x] Extract directories by selecting the directory's name in the tree
 - [X] More reliable file search (ensure we always get the correct file and not a file with the same name from another subdirectory)
+- [X] Search in files
 - [X] "Open archive" file prompt
 - [X] "Extract to" file prompt
 - [X] Provide pre-built binaries (Windows and Linux)
-  - [ ] MacOS binaries
+    - [ ] MacOS binaries
+- [ ] Check for updates & update from inside the app
 - [ ] "Extract as" button, converting files to more common formats (for ex. a .tga named .tex -> .png)
-- [X] Search in files
 - [ ] File information layout
   - [ ] Identify file types with magic
   - [ ] Wrap around libmagic to identify Pathologic-specific file formats? (LSH, main.dat and such)
@@ -80,3 +81,9 @@ options:
                         extract a file by filename
   --extract_all         unpack the whole .VFS archive at once
 ```
+# Credits
+- somevideoguy and EGBland for their research on Pathologic's VFS format, available [here](https://github.com/somevideoguy/pathologic)  
+- Mario & Jon for through testing and catching many bugs, big and small
+
+# License
+VFS Explorer and plaguevfs are both licensed under [GPL v3.0](./COPYING).
