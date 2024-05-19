@@ -17,7 +17,7 @@
 python_dir="C:/Python312"
 path_to_wineprefix = "`pwd`/wineprefix"
 
-program_name="VFS_Toolkit_windows_amd64"
+program_name="VFS_Explorer_windows_amd64"
 
 if [ -d "dist/$program_name" ]; then
     rm -rf "dist/$program_name";
@@ -27,7 +27,7 @@ if [ -d "dist/$program_name.zip" ]; then
 fi
 
 WINEPREFIX="$path_to_wineprefix" wine $python_dir/Scripts/pyinstaller.exe \
-vfs_toolkit.py
+vfs_explorer.py
 --name "$program_name" \
 --contents-directory "programresources" \
 --noconsole \

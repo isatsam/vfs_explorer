@@ -7,7 +7,7 @@
 # comment out the last two lines of the script.
 source ".venv/bin/activate"
 
-program_name="VFS_Toolkit_linux_amd64"
+program_name="VFS_Explorer_linux_amd64"
 
 if [ -d "dist/$program_name" ]; then
     rm -rf "dist/$program_name";
@@ -17,7 +17,7 @@ if [ -d "dist/$program_name.zip" ]; then
 fi
 
 pyinstaller \
-vfs_toolkit.py \
+vfs_explorer.py \
 --name "$program_name" \
 --contents-directory "programresources" \
 --noconsole
