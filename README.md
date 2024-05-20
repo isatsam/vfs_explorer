@@ -1,6 +1,8 @@
 # VFS Explorer
 A tool for previewing and extracting files stored in VFS archives, such as those used in Pathologic 1.
 
+![Screenshot of VFS Archive version 1.0, running on Linux and demonstrating a viewed archive.](./screenshot_1.0.png)
+
 ## Features
 - List contents of a VFS archive
 - Select files or subdirectories to extract them
