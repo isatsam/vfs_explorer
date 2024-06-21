@@ -1,5 +1,6 @@
-from PySide6.QtWidgets import QMenu, QMenuBar, QMessageBox, QDialog, QLabel, QVBoxLayout
-from PySide6.QtGui import QAction
+import requests
+from PySide6.QtWidgets import QMenu, QMenuBar, QMessageBox, QDialog, QLabel, QVBoxLayout, QPushButton
+from PySide6.QtGui import QAction, QDesktopServices
 from PySide6.QtCore import Qt
 from .extractor import Extractor
 from .__version__ import __version__
@@ -101,12 +102,15 @@ class MenuBar(QMenuBar):
     def createAboutMenu(self):
         menu = QMenu("&Help")
         about = menu.addAction("&About VFS Explorer")
+        updates = menu.addAction("&Check for updates")
 
         about.triggered.connect(self.showAboutMenu)
+        updates.triggered.connect(self.checkForUpdates)
 
         return menu
 
-    def showAboutMenu(self, product_version):
+    @staticmethod
+    def showAboutMenu():
         webpage_url = "https://github.com/hypnotiger/vfs_explorer"
 
         about = ("VFS Explorer is a program for viewing and extracting the contents of VFS archives, "
@@ -119,5 +123,75 @@ class MenuBar(QMenuBar):
         about_menu = QMessageBox(
             text=about
         )
+        about_menu.setWindowTitle("About VFS Explorer")
         about_menu.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
         about_menu.exec()
+
+    def checkForUpdates(self):
+        """
+        Initializes the check (via requests library) and creates all the dialogues needed to tell the user
+        about whether there's any updates available.
+        """
+
+        """ We expect that any given URL points towards a page for the latest version, 
+            and that the URL part after the last slash (/) is the latest version's number. 
+            So, essentially, we are only ready for Github's /releases/latest, which will redirect us 
+            to wherever we need. If the project ever moves to a service with a different URL setup, 
+            we will just have rework a little bit of code."""
+        SOURCE = "https://github.com/hypnotiger/vfs_explorer/releases/latest"
+
+        def open_url():
+            QDesktopServices.openUrl(SOURCE)
+
+        self.parent().statusBar.showMessage("Checking for updates...")
+
+        try:
+            new_version = self.getLatestVersion(SOURCE)
+        except requests.ConnectionError as error:
+            self.parent().statusBar.showMessage("")
+            text = f"{error}"
+            msg = QMessageBox(text=text)
+            msg.exec()
+            return
+
+        if new_version != __version__:
+            update_dialog = QDialog()
+            update_dialog.setWindowTitle("Update VFS Explorer")
+            update_dialog_layout = QVBoxLayout()
+
+            text = QLabel(update_dialog)
+            text.setText(f"You're using version {__version__}, but version {new_version} is available.<br><br>")
+
+            button = QPushButton()
+            button.setText("Get a new version from Github")
+            button.clicked.connect(open_url)
+
+            update_dialog_layout.addWidget(text)
+            update_dialog_layout.addWidget(button)
+
+            update_dialog.setLayout(update_dialog_layout)
+
+            update_dialog.adjustSize()
+
+            self.parent().statusBar.showMessage("New version available...")
+
+            update_dialog.exec()
+        else:
+            self.parent().statusBar.showMessage("")
+            text = "No new versions available."
+            msg = QMessageBox(
+                text=text
+            )
+            msg.setWindowTitle("VFS Explorer")
+            msg.exec()
+
+    @staticmethod
+    def getLatestVersion(check_url):
+        response = requests.get(check_url)
+        if response.status_code != 200:
+            raise requests.ConnectionError(f"Error {response.status_code}." +
+                                           "If there's an Internet connection, please manually check for a new "
+                                           + "version.")
+
+        ver = response.url.split("/").pop()
+        return ver
