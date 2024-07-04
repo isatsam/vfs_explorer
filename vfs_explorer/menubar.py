@@ -10,17 +10,21 @@ class MenuBar(QMenuBar):
     def __init__(self):
         super().__init__()
 
+        # Create "File" menu > Open..., Close archive
         self.fileMenu, self.openNew, self.closeThis = self.createFileMenu()
         self.addMenu(self.fileMenu)
 
+        # Create Search button (shows the search bar and focuses on it)
         self.searchButton = QAction("Search", self)
         self.searchButton.triggered.connect(self.showSearchBar)
         self.addAction(self.searchButton)
 
+        # Create Extract menu > all the extract options
         (self.extractMenu, self.extractSelected, self.extractAll, self.extractDryRun,
          self.unselectSelected) = self.createExtractMenu()
         self.addMenu(self.extractMenu)
 
+        # Create About menu > About VFS Explorer, Check for new versions
         self.aboutMenu = self.createAboutMenu()
         self.addMenu(self.aboutMenu)
 
@@ -44,12 +48,18 @@ class MenuBar(QMenuBar):
         self.parent().createEmptyWindow()
 
     def showSearchBar(self):
-        bar = self.parent().searchToolBar
-        if bar.isHidden():
-            bar.show()
+        bar = self.parent().searchLine
+        bar_zone = self.parent().searchToolBar
+
+        if not self.searchButton.isEnabled():
+            # Filter out shortcuts for when the search bar isn't supposed to show (for example when no archive is open)
+            pass
+        elif bar_zone.isHidden():
+            bar_zone.show()
+            bar.setFocus()
             self.searchButton.setText("Hide search")
         else:
-            bar.hide()
+            bar_zone.hide()
             self.searchButton.setText("Search")
 
     def createExtractMenu(self):
@@ -100,9 +110,12 @@ class MenuBar(QMenuBar):
             self.unselectSelected.setDisabled(True)
 
     def createAboutMenu(self):
-        menu = QMenu("&Help")
+        menu = QMenu("&Preferences")
         about = menu.addAction("&About VFS Explorer")
-        updates = menu.addAction("&Check for updates")
+        menu.addSeparator()
+        shouldCheckForUpdatesCheckbox = menu.addAction("&Check for updates on startup")
+        shouldCheckForUpdatesCheckbox.setCheckable(True)
+        updates = menu.addAction("&Check for updates now")
 
         about.triggered.connect(self.showAboutMenu)
         updates.triggered.connect(self.checkForUpdates)
@@ -143,7 +156,7 @@ class MenuBar(QMenuBar):
         def open_url():
             QDesktopServices.openUrl(SOURCE)
 
-        self.parent().statusBar.showMessage("Checking for updates...")
+        self.parent().statusBar.showMessage("Checking for new versions...")
 
         try:
             new_version = self.getLatestVersion(SOURCE)
@@ -163,7 +176,7 @@ class MenuBar(QMenuBar):
             text.setText(f"You're using version {__version__}, but version {new_version} is available.<br><br>")
 
             button = QPushButton()
-            button.setText("Get a new version from Github")
+            button.setText("Get it from Github")
             button.clicked.connect(open_url)
 
             update_dialog_layout.addWidget(text)

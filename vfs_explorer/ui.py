@@ -1,5 +1,6 @@
 from plaguevfs import VfsArchive
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu)
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtCore import Qt
 from .extractor import Extractor
 from .vfs_tree import VfsTree
@@ -20,8 +21,15 @@ class UI(QMainWindow):
         self.menuBar = MenuBar()
         self.setMenuBar(self.menuBar)
         self.addToolBarBreak()
-        self.searchToolBar = Search(self).searchWidget
+        self.searchLine = Search(self)
+        self.searchToolBar = self.searchLine.searchWidget
         self.addToolBar(self.searchToolBar)
+
+        # Create Search keyboard shortcut (shows the search bar and focuses on it)
+        # FIXME: For whichever reason the search bar won't open more than once per session
+        self.searchShortcut = QShortcut(QKeySequence("Ctrl+F"), self)
+        self.searchShortcut.activated.connect(self.menuBar.showSearchBar)
+
 
         # create a dummy widget and put the main layout in it
         self.childLayout = QVBoxLayout()
@@ -42,7 +50,7 @@ class UI(QMainWindow):
         if archive:
             self.tree, self.treeItems = self.createTreeView(self.archive)
             self.openFileDialog = None
-        else:    # create an "Open archive" button and add it to the layout
+        else:  # create an "Open archive" button and add it to the layout
             self.createEmptyWindow()
             self.tree, self.treeItems = (None, None)
 
