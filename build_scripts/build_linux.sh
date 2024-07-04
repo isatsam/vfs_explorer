@@ -21,7 +21,8 @@ vfs_explorer.py \
 --name "$program_name" \
 --contents-directory "programresources" \
 --noconsole \
---add-data=COPYING:License
+--add-data=COPYING:License \
+--clean
 
 
 cd dist/

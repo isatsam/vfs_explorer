@@ -19,6 +19,8 @@ path_to_wineprefix="`pwd`/wineprefix"
 
 program_name="VFS_Explorer_windows_amd64"
 
+WINEPREFIX="$path_to_wineprefix" wine $python_dir/Scripts/pip.exe install -U -r "`pwd`/requirements.txt"
+
 if [ -d "dist/$program_name" ]; then
     rm -rf "dist/$program_name";
 fi
@@ -76,7 +78,8 @@ vfs_explorer.py \
 --noconsole \
 --icon build_scripts/icon.ico \
 --version-file version_file.txt \
---add-data=COPYING:License
+--add-data=COPYING:License \
+--clean
 
-# cd dist/
-# 7za a $program_name.zip $program_name
+cd dist/
+7za a $program_name.zip $program_name
