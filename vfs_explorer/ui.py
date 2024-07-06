@@ -10,8 +10,10 @@ from .status import StatusBar
 
 
 class UI(QMainWindow):
-    def __init__(self, archive):
+    def __init__(self, archive, app):
         super().__init__()
+
+        self.app = app
 
         # calculate and set the window size
         self.window_size = [self.screen().size().width() // 2, self.screen().size().height() // 2]
@@ -145,7 +147,7 @@ class UI(QMainWindow):
             extract_action = menu.addAction("&Extract whole directory")
         else:
             extract_action = menu.addAction("&Extract selected")
-        extract_dummy = menu.addAction("&Extract a dry run (won't write files to disk)")
+        extract_dummy = menu.addAction("Extract a &dry run (won't write files to disk)")
         menu.addSeparator()
         unselect_action = menu.addAction("&Clear selection")
         action = menu.exec_(self.mapToGlobal(point))

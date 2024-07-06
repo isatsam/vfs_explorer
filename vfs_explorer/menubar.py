@@ -15,7 +15,7 @@ class MenuBar(QMenuBar):
         self.addMenu(self.fileMenu)
 
         # Create Search button (shows the search bar and focuses on it)
-        self.searchButton = QAction("Search", self)
+        self.searchButton = QAction(self.tr("Search"), self)
         self.searchButton.triggered.connect(self.showSearchBar)
         self.addAction(self.searchButton)
 
@@ -31,9 +31,9 @@ class MenuBar(QMenuBar):
         self.disableAbleElements = [self.fileMenu, self.searchButton, self.extractMenu]
 
     def createFileMenu(self):
-        menu = QMenu("&File")
-        open_new = menu.addAction("&Open...")
-        close_archive = menu.addAction("&Close archive")
+        menu = QMenu(self.tr("&File"))
+        open_new = menu.addAction(self.tr("&Open..."))
+        close_archive = menu.addAction(self.tr("&Close archive"))
 
         open_new.triggered.connect(self.openNewAction)
         close_archive.triggered.connect(self.closeArchiveAction)
@@ -52,27 +52,29 @@ class MenuBar(QMenuBar):
         bar_zone = self.parent().searchToolBar
 
         if not self.searchButton.isEnabled():
-            # Filter out shortcuts for when the search bar isn't supposed to show (for example when no archive is open)
+            # Filter out shortcuts for when the search bar isn't supposed to
+            # show (for example when no archive is open)
             pass
         elif bar_zone.isHidden():
             bar_zone.show()
             bar.setFocus()
-            self.searchButton.setText("Hide search")
+            self.searchButton.setText(self.tr("Hide search"))
         else:
             bar_zone.hide()
-            self.searchButton.setText("Search")
+            self.searchButton.setText(self.tr("Search"))
 
     def createExtractMenu(self):
         menu = QMenu("&Extract...")
-        extract_selected = menu.addAction("&Extract selected")
+        extract_selected = menu.addAction(self.tr("&Extract selected"))
         extract_selected.setDisabled(True)
-        unselect_action = menu.addAction("&Clear selection")
+        unselect_action = menu.addAction(self.tr("&Clear selection"))
         unselect_action.setDisabled(True)
 
         menu.addSeparator()
 
-        extract_all = menu.addAction("&Extract this archive")
-        extract_dry_run = menu.addAction("&Extract this archive (dry run - won't write files to disk)")
+        extract_all = menu.addAction(self.tr("&Extract this archive"))
+        extract_dry_run = menu.addAction(self.tr("&Extract this archive" +\
+                                    "(dry run - won't write files to disk)"))
 
         extract_selected.triggered.connect(self.extractSelectedFiles)
         extract_all.triggered.connect(self.extractArchive)
@@ -85,18 +87,22 @@ class MenuBar(QMenuBar):
         Extractor.extractSelectedFiles(ui_obj=self.parent(), dry_run=False)
 
     def extractArchive(self):
-        extracted_files, extracted_to_path = Extractor.extractFiles(files=[self.parent().treeItems[0]],
-                                                                    ui_obj=self.parent(), dry_run=False)
+        extracted_files, extracted_to_path = Extractor.extractFiles(
+                                        files=[self.parent().treeItems[0]],
+                                        ui_obj=self.parent(), dry_run=False)
         if extracted_files and extracted_to_path:
-            self.parent().statusBar.createExtractedMessage(extracted_files=extracted_files,
-                                                           extracted_to_path=extracted_to_path)
+            self.parent().statusBar.createExtractedMessage(
+                                            extracted_files=extracted_files,
+                                            extracted_to_path=extracted_to_path)
 
     def extractDryArchive(self):
-        extracted_files, extracted_to_path = Extractor.extractFiles(files=[self.parent().treeItems[0]],
-                                                                    ui_obj=self.parent(), dry_run=True)
+        extracted_files, extracted_to_path = Extractor.extractFiles(
+                                            files=[self.parent().treeItems[0]],
+                                            ui_obj=self.parent(), dry_run=True)
         if extracted_files and extracted_to_path:
-            self.parent().statusBar.createExtractedMessage(extracted_files=extracted_files,
-                                                           extracted_to_path=extracted_to_path)
+            self.parent().statusBar.createExtractedMessage(
+                                        extracted_files=extracted_files,
+                                        extracted_to_path=extracted_to_path)
 
     def unselectFiles(self):
         self.parent().tree.clearSelection()
@@ -110,53 +116,64 @@ class MenuBar(QMenuBar):
             self.unselectSelected.setDisabled(True)
 
     def createAboutMenu(self):
-        menu = QMenu("&Preferences")
-        about = menu.addAction("&About VFS Explorer")
-        menu.addSeparator()
-        shouldCheckForUpdatesCheckbox = menu.addAction("&Check for updates on startup")
-        shouldCheckForUpdatesCheckbox.setCheckable(True)
-        updates = menu.addAction("&Check for updates now")
+        menu = QMenu(self.tr("&Preferences"))
+        languageSubmenu = QMenu(self.tr("&Language"))
+        english = languageSubmenu.addAction(self.tr("English"))  # TODO: When we actually have language files,
+                                                        # we should loop over them and add languages dynamically
+        menu.addMenu(languageSubmenu)
 
+        menu.addSeparator()
+        shouldCheckForUpdatesCheckbox = menu.addAction(
+                                    self.tr("&Check for updates on startup"))  # TODO
+        shouldCheckForUpdatesCheckbox.setCheckable(True)
+
+        checkForUpdates = menu.addAction(self.tr("&Check for updates now"))
+        checkForUpdates.triggered.connect(self.checkForUpdates)
+
+        menu.addSeparator()
+        showDebugOptionsCheckbox = menu.addAction(
+                                            self.tr("&Show debug options"))  # TODO
+        showDebugOptionsCheckbox.setCheckable(True)
+
+        menu.addSeparator()
+        about = menu.addAction(self.tr("&About VFS Explorer"))
         about.triggered.connect(self.showAboutMenu)
-        updates.triggered.connect(self.checkForUpdates)
 
         return menu
 
-    @staticmethod
-    def showAboutMenu():
+    def showAboutMenu(self):
         webpage_url = "https://github.com/hypnotiger/vfs_explorer"
 
-        about = ("VFS Explorer is a program for viewing and extracting the contents of VFS archives, "
+        about = self.tr("VFS Explorer is a program for viewing and extracting the contents of VFS archives, "
                  "such as those found in some of the games by Ice-Pick Lodge.<br>"
                  "VFS Explorer is licensed under GNU General Public License v3.0, a copy of which is included.<br>"
-                 f'Website: <a href="{webpage_url}">{webpage_url}</a><br><br>'
-                 f"Version: {__version__}"
-                 )
+                 f'Website: <a href="{0}">{0}</a><br><br>'
+                 f"Version: {1}"
+                 ).format(webpage_url, __version__)
 
-        about_menu = QMessageBox(
-            text=about
-        )
-        about_menu.setWindowTitle("About VFS Explorer")
+        about_menu = QMessageBox(text=about)
+        about_menu.setWindowTitle(self.tr("About VFS Explorer"))
         about_menu.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
         about_menu.exec()
 
     def checkForUpdates(self):
         """
-        Initializes the check (via requests library) and creates all the dialogues needed to tell the user
-        about whether there's any updates available.
+        Initializes the check (via requests library) and creates all the
+        dialogues needed to tell the use about whether there's any updates available.
         """
 
-        """ We expect that any given URL points towards a page for the latest version, 
-            and that the URL part after the last slash (/) is the latest version's number. 
-            So, essentially, we are only ready for Github's /releases/latest, which will redirect us 
-            to wherever we need. If the project ever moves to a service with a different URL setup, 
-            we will just have rework a little bit of code."""
+        """ We expect that any given URL points towards a page for the latest version,
+            and that the URL part after the last slash (/) is the latest version's number.
+            In this case, Github's /releases/latest will redirect us
+            to wherever we need. If the project ever moves to a service with a different URL setup,
+            we will just have rework this bit of code."""
         SOURCE = "https://github.com/hypnotiger/vfs_explorer/releases/latest"
 
         def open_url():
             QDesktopServices.openUrl(SOURCE)
 
-        self.parent().statusBar.showMessage("Checking for new versions...")
+        self.parent().statusBar.showMessage(
+                                self.tr("Checking for new versions..."))
 
         try:
             new_version = self.getLatestVersion(SOURCE)
@@ -169,42 +186,38 @@ class MenuBar(QMenuBar):
 
         if new_version != __version__:
             update_dialog = QDialog()
-            update_dialog.setWindowTitle("Update VFS Explorer")
+            update_dialog.setWindowTitle(self.tr("Update VFS Explorer"))
             update_dialog_layout = QVBoxLayout()
 
             text = QLabel(update_dialog)
-            text.setText(f"You're using version {__version__}, but version {new_version} is available.<br><br>")
+            text.setText(self.tr("You're using version {0}, but version {1}"
+                                "is available.<br><br>").format(__version__,
+                                                                new_version))
 
             button = QPushButton()
-            button.setText("Get it from Github")
+            button.setText(self.tr("Get it from Github"))
             button.clicked.connect(open_url)
 
             update_dialog_layout.addWidget(text)
             update_dialog_layout.addWidget(button)
-
             update_dialog.setLayout(update_dialog_layout)
-
             update_dialog.adjustSize()
-
-            self.parent().statusBar.showMessage("New version available...")
 
             update_dialog.exec()
         else:
             self.parent().statusBar.showMessage("")
-            text = "No new versions available."
-            msg = QMessageBox(
-                text=text
-            )
+            text = self.tr("No new versions available.")
+            msg = QMessageBox(text=text)
             msg.setWindowTitle("VFS Explorer")
             msg.exec()
 
-    @staticmethod
-    def getLatestVersion(check_url):
+    def getLatestVersion(self, check_url):
         response = requests.get(check_url)
         if response.status_code != 200:
-            raise requests.ConnectionError(f"Error {response.status_code}." +
-                                           "If there's an Internet connection, please manually check for a new "
-                                           + "version.")
+            text = self.tr("Error {0}. If there's an Internet connection,"
+                            "please manually check for a new version.")\
+                            .format(response.status_code)
+            raise requests.ConnectionError(text)
 
         ver = response.url.split("/").pop()
         return ver
