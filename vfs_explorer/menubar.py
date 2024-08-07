@@ -1,6 +1,6 @@
 import requests
 import os
-from PySide6.QtWidgets import QMenu, QMenuBar, QMessageBox, QDialog, QLabel, QVBoxLayout, QPushButton
+from PySide6.QtWidgets import QAbstractButton, QMenu, QMenuBar, QMessageBox, QDialog, QLabel, QStyle, QVBoxLayout, QPushButton
 from PySide6.QtGui import QAction, QDesktopServices
 from PySide6.QtCore import QTime, QTranslator, Qt
 from .extractor import Extractor
@@ -159,22 +159,24 @@ class MenuBar(QMenuBar):
         menu.addSeparator()
         about = menu.addAction(self.tr("&About VFS Explorer"))
         about.triggered.connect(self.showAboutMenu)
+        github = menu.addAction(self.tr("View on GitHub"))
+        github.triggered.connect(self.openGithub)
 
         return menu
 
     def showAboutMenu(self):
-        webpage_url = "https://github.com/hypnotiger/vfs_explorer"
+        about = self.tr("""VFS Explorer is a program for viewing and extracting the contents of VFS archives, such as those found in some of the games by Ice-Pick Lodge.
+VFS Explorer is licensed under GNU General Public License v3.0, a copy of which is included.
+Version: {}""").format(__version__)
 
-        about = self.tr("VFS Explorer is a program for viewing and extracting the contents of VFS archives, "
-                 "such as those found in some of the games by Ice-Pick Lodge.<br>"
-                 "VFS Explorer is licensed under GNU General Public License v3.0, a copy of which is included.<br>"
-                 f'Website: <a href="{0}">{0}</a><br><br>'
-                 f"Version: {1}").format(webpage_url, __version__)
-
-        about_menu = QMessageBox(text=about)
+        about_menu = QMessageBox()
+        about_menu.setText(about)
         about_menu.setWindowTitle(self.tr("About VFS Explorer"))
-        about_menu.setTextInteractionFlags(Qt.LinksAccessibleByMouse)
         about_menu.exec()
+
+    def openGithub(self):
+        url = "https://github.com/isatsam/vfs_explorer"
+        QDesktopServices.openUrl(url)
 
     def checkForUpdates(self):
         """

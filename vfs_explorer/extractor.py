@@ -5,12 +5,17 @@ from .config import Global
 import os.path
 
 # A workaround for i18n
+# USAGE: tr("String", context=CONTEXT)
+# This seems to be the only way to both make lupdate pick it up and
+#   provide context
 tr = QCoreApplication.translate
+CONTEXT = "Extractor (pop-up prompts)"
 
 class Extractor:
     @classmethod
     def get_embed_file_vfs_path(cls, embed_file, file_tree_item, ui_obj):
-        if not embed_file.parent.parent and file_tree_item.parent() == ui_obj.treeItems[0]:
+        if not embed_file.parent.parent and \
+                file_tree_item.parent() == ui_obj.treeItems[0]:
             """ Check for files in top-level directories/trees """
             return True
 
@@ -27,7 +32,8 @@ class Extractor:
 
     @classmethod
     def extractSelectedFiles(cls, ui_obj, dry_run=False):
-        return cls.extractFiles(files=ui_obj.tree.selectedItems(), ui_obj=ui_obj, dry_run=dry_run)
+        return cls.extractFiles(files=ui_obj.tree.selectedItems(), \
+                ui_obj=ui_obj, dry_run=dry_run)
 
     @classmethod
     def extractFiles(cls, files: list, ui_obj, dry_run=False):
@@ -55,7 +61,8 @@ class Extractor:
             else:
                 extract_files.append(item.embeddedFile)
 
-        """ Hacky way to figure out if we need to create any subdirectories on the drive. """
+        """ Hacky way to figure out if we need to create any
+                subdirectories on the drive. """
         map_of_directories = {'': []}
         for file in extract_files:
             if file.parent.parent is None:
@@ -76,7 +83,8 @@ class Extractor:
         apply_all_selected = False
         successfully_extracted_filenames = []
         for path in map_of_directories:
-            """ Try to create a subdirectory for files not from the root of the tree, if that is needed """
+            """ Try to create a subdirectory for files not from the
+                    root of the tree, if that is needed """
             target_dir = os.path.join(starter_target_path, path)
             if not os.path.exists(target_dir):
                 if not dry_run:
@@ -89,15 +97,16 @@ class Extractor:
                 if os.path.isfile(target_filepath):
                     if not apply_all_selected:
                         display_path = os.path.basename(starter_target_path)
-                        user_response, apply_all_selected = cls.overwriteFilePrompt(obj.name, display_path,
-                                                                                    multiple_files)
+                        user_response, apply_all_selected = \
+                            cls.overwriteFilePrompt(obj.name, display_path,
+                                                            multiple_files)
 
                     match user_response:
                         case 16384:  # Yes, overwrite
                             pass
                         case 4194304:  # User cancelled, escape the loop
                             break
-                        case _:  # No, don't overwrite this file (go back to the loop)
+                        case _:  # No, don't overwrite this file (back to loop)
                             continue
 
                 if not dry_run:
@@ -107,7 +116,8 @@ class Extractor:
                     print(f"There was a double: {obj.name}")
                 successfully_extracted_filenames.append(obj.name)
 
-        print(f"Extracted {len(successfully_extracted_filenames)} file(s) to {starter_target_path}")
+        print(f"Extracted {len(successfully_extracted_filenames)} file(s) \
+                    to {starter_target_path}")
         return successfully_extracted_filenames, starter_target_path
 
     @classmethod
@@ -116,7 +126,7 @@ class Extractor:
         openDialog.setAcceptMode(QFileDialog.AcceptSave)
         openDialog.setViewMode(QFileDialog.Detail)
         openDialog.setOption(QFileDialog.DontUseNativeDialog)
-        openDialog.setNameFilter(tr('Extract to...'))  # FIXME: This cannot be self.tr'd
+        openDialog.setNameFilter(tr("Extract to...", context=CONTEXT))
 
         selected = openDialog.getExistingDirectory()
         if not os.path.exists(selected):
@@ -127,19 +137,20 @@ class Extractor:
     @classmethod
     def overwriteFilePrompt(cls, filename, target_dir_name, are_multiple_files):
         prompt = QMessageBox()
-        prompt.setText(tr(f'File {0} exists in folder {1}. \
-                Overwrite it?', context="extractor").format(filename, target_dir_name))
+        prompt.setText(tr(f"File {0} exists in folder {1}. \
+                Overwrite it?", context=CONTEXT).format(filename,
+                                                        target_dir_name))
 
         yes_button = prompt.addButton(QMessageBox.StandardButton.Yes)
-        yes_button.setText(tr('Overwrite'))
+        yes_button.setText(tr("Overwrite", context=CONTEXT))
         no_button = prompt.addButton(QMessageBox.StandardButton.No)
-        no_button.setText(tr('Skip overwriting'))
+        no_button.setText(tr("Skip overwriting", context=CONTEXT))
         prompt.setDefaultButton(no_button)
         prompt.addButton(QMessageBox.StandardButton.Cancel)
 
         if are_multiple_files:
             apply_to_all = QCheckBox()
-            apply_to_all.setText(tr('Apply to all'))
+            apply_to_all.setText(tr('Apply to all', context=CONTEXT))
             prompt.setCheckBox(apply_to_all)
         else:
             apply_to_all = None

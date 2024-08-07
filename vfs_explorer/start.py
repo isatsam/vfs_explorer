@@ -33,7 +33,7 @@ def start(path_to_archive=None):
         # If a translation corresponding to user's locale is included
         translator.load(f'{QLocale.system().language().name}.qm.', os.getcwd())
     else:
-        # Fall back to default language, which is English
+        # Fall back to default language
         translator.load('English.qm', os.getcwd())
     # Additionally, if en.qm is missing, it will just show "non-translated"
     # strings, which are kind of in English anyways.
