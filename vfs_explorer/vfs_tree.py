@@ -9,16 +9,10 @@ class VfsTree(QTreeWidget):
     def __init__(self, archive):
         super().__init__()
         self.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
-        # self.selectionModel().selectionChanged.connect(self.test_action)
 
         self.archive = archive
         self.CreateArchiveTreeView(self.archive)
         self.itemAt(0, 0).setExpanded(True)
-        # self.setRootIndex(self.indexFromItem(self.itemAt(0, 0)))
-
-    @staticmethod
-    def test_action():
-        print('something just happened')
 
     def CreateArchiveTreeView(self, archive) -> None:
         def add_dir_to_tree(items_list, directory: pvfs.Directory):
@@ -52,7 +46,8 @@ class VfsTree(QTreeWidget):
             return items_list
 
         self.setColumnCount(1)
-        header_labels = ["File", "Size", "Last modified"]
+        header_labels = [self.tr("Filename"), self.tr("Size"),
+                        self.tr("Last modified")]
         self.setColumnWidth(0, self.window().size().width() // 2)
         self.setHeaderLabels(header_labels)
         self.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)

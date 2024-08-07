@@ -1,9 +1,11 @@
 import requests
+import os
 from PySide6.QtWidgets import QMenu, QMenuBar, QMessageBox, QDialog, QLabel, QVBoxLayout, QPushButton
 from PySide6.QtGui import QAction, QDesktopServices
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QTime, QTranslator, Qt
 from .extractor import Extractor
 from .__version__ import __version__
+from .config import Global as config
 
 
 class MenuBar(QMenuBar):
@@ -64,7 +66,7 @@ class MenuBar(QMenuBar):
             self.searchButton.setText(self.tr("Search"))
 
     def createExtractMenu(self):
-        menu = QMenu("&Extract...")
+        menu = QMenu(self.tr("&Extract..."))
         extract_selected = menu.addAction(self.tr("&Extract selected"))
         extract_selected.setDisabled(True)
         unselect_action = menu.addAction(self.tr("&Clear selection"))
@@ -115,11 +117,30 @@ class MenuBar(QMenuBar):
             self.extractSelected.setDisabled(True)
             self.unselectSelected.setDisabled(True)
 
+    def setLanguage(self, lang_file):
+        config.settings.setValue("user_language", lang_file)
+
+        # Reinstalling the translator will make all next new windows
+        # use the new language (incl. the "restart app..." text)
+        config.app.removeTranslator(config.translator)
+        config.translator.load(lang_file, config.path_to_languages)
+        config.app.installTranslator(config.translator)
+        msg = QMessageBox()
+        msg.setText(self.tr("Restart app to apply changes"))
+        msg.exec()
+
     def createAboutMenu(self):
         menu = QMenu(self.tr("&Preferences"))
         languageSubmenu = QMenu(self.tr("&Language"))
-        english = languageSubmenu.addAction(self.tr("English"))  # TODO: When we actually have language files,
-                                                        # we should loop over them and add languages dynamically
+
+        languages = []
+        for file in os.listdir(os.getcwd()):
+            if file.endswith('.qm'):
+                languages.append(file)
+
+        for lang in languages:
+            this_lang = languageSubmenu.addAction(lang[:lang.find('.qm')])
+            this_lang.triggered.connect(lambda x=None, lang=lang: self.setLanguage(lang))
         menu.addMenu(languageSubmenu)
 
         menu.addSeparator()
@@ -148,8 +169,7 @@ class MenuBar(QMenuBar):
                  "such as those found in some of the games by Ice-Pick Lodge.<br>"
                  "VFS Explorer is licensed under GNU General Public License v3.0, a copy of which is included.<br>"
                  f'Website: <a href="{0}">{0}</a><br><br>'
-                 f"Version: {1}"
-                 ).format(webpage_url, __version__)
+                 f"Version: {1}").format(webpage_url, __version__)
 
         about_menu = QMessageBox(text=about)
         about_menu.setWindowTitle(self.tr("About VFS Explorer"))

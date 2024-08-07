@@ -1,8 +1,11 @@
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QCheckBox
-from PySide6.QtCore import QFileInfo
+from PySide6.QtCore import QFileInfo, QObject, QCoreApplication
 from .vfs_tree import VfsTreeItemFile, VfsTreeItemDirectory
+from .config import Global
 import os.path
 
+# A workaround for i18n
+tr = QCoreApplication.translate
 
 class Extractor:
     @classmethod
@@ -53,9 +56,6 @@ class Extractor:
                 extract_files.append(item.embeddedFile)
 
         """ Hacky way to figure out if we need to create any subdirectories on the drive. """
-        # TODO: Currently we're creating subdirectories relatively to the root of the VFS. If we don't start
-        #   extracting at the root but in a deeper level subdirectory, we should be creating subdirectories
-        #   relative to that. Might be easier if we implement EmbeddedFile to know its full path first?
         map_of_directories = {'': []}
         for file in extract_files:
             if file.parent.parent is None:
@@ -116,7 +116,7 @@ class Extractor:
         openDialog.setAcceptMode(QFileDialog.AcceptSave)
         openDialog.setViewMode(QFileDialog.Detail)
         openDialog.setOption(QFileDialog.DontUseNativeDialog)
-        openDialog.setNameFilter('Extract to...')
+        openDialog.setNameFilter(tr('Extract to...'))  # FIXME: This cannot be self.tr'd
 
         selected = openDialog.getExistingDirectory()
         if not os.path.exists(selected):
@@ -127,18 +127,19 @@ class Extractor:
     @classmethod
     def overwriteFilePrompt(cls, filename, target_dir_name, are_multiple_files):
         prompt = QMessageBox()
-        prompt.setText(f'File {filename} already exists in folder {target_dir_name}. Overwrite it?')
+        prompt.setText(tr(f'File {0} exists in folder {1}. \
+                Overwrite it?', context="extractor").format(filename, target_dir_name))
 
         yes_button = prompt.addButton(QMessageBox.StandardButton.Yes)
-        yes_button.setText('Overwrite')
+        yes_button.setText(tr('Overwrite'))
         no_button = prompt.addButton(QMessageBox.StandardButton.No)
-        no_button.setText('Skip overwriting')
+        no_button.setText(tr('Skip overwriting'))
         prompt.setDefaultButton(no_button)
         prompt.addButton(QMessageBox.StandardButton.Cancel)
 
         if are_multiple_files:
             apply_to_all = QCheckBox()
-            apply_to_all.setText('Apply to all')
+            apply_to_all.setText(tr('Apply to all'))
             prompt.setCheckBox(apply_to_all)
         else:
             apply_to_all = None

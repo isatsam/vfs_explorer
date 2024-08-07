@@ -13,7 +13,7 @@ class StatusBar(QStatusBar):
 
     def createExtractedMessage(self, extracted_to_path, extracted_files):
         # putting together a statusbar message, based on things .extractSelected() communicated back to us
-        msg = f'Extracted to {extracted_to_path}: '
+        msg = self.tr('Extracted to {0}: ').format(extracted_to_path)
         for i in range(0, min(2, len(extracted_files))):
             text = extracted_files[i]
             msg += f' {text}'

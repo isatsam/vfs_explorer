@@ -8,7 +8,7 @@ class Search(QLineEdit):
 
         super().__init__()
 
-        self.setPlaceholderText("Search")
+        self.setPlaceholderText(self.tr("Search"))
         self.textChanged.connect(self.showSearchResults)
 
         self.searchWidget = SearchWidget(self)

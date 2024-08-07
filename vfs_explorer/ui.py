@@ -10,10 +10,8 @@ from .status import StatusBar
 
 
 class UI(QMainWindow):
-    def __init__(self, archive, app):
+    def __init__(self, archive):
         super().__init__()
-
-        self.app = app
 
         # calculate and set the window size
         self.window_size = [self.screen().size().width() // 2, self.screen().size().height() // 2]
@@ -68,7 +66,7 @@ class UI(QMainWindow):
     def openFromFile(self):
         openDialog = QFileDialog(self)
         openDialog.setFileMode(QFileDialog.ExistingFile)
-        openDialog.setNameFilter('VFS archives (*.vfs)')
+        openDialog.setNameFilter(self.tr('VFS archives (*.vfs)'))
         openDialog.exec()
         try:
             selected = openDialog.selectedFiles()[0]
@@ -82,11 +80,11 @@ class UI(QMainWindow):
         return openDialog
 
     def createEmptyWindow(self):
-        self.setWindowTitle('VFS Toolkit')
+        self.setWindowTitle('VFS Extractor')
         self.setUiDisabled(True)
 
         openArchiveButton = QPushButton('&Open', self)
-        openArchiveButton.setText('Open archive')
+        openArchiveButton.setText(self.tr('Open archive'))
         openArchiveButton.setMinimumSize(90, 40)
 
         openDialog = openArchiveButton.clicked.connect(self.openFromFile)
@@ -135,21 +133,24 @@ class UI(QMainWindow):
             self.childLayout.removeWidget(widget)
 
         self.childLayout.addWidget(new_vfs_tree)
-        self.statusBar.showMessage(f'Opened {archive.name} containing {len(all_items_in_tree)} files')
+        self.statusBar.showMessage(
+            self.tr('Opened {0} containing {1} files').format(archive.name,
+                                                    len(all_items_in_tree)))
 
-        new_vfs_tree.selectionModel().selectionChanged.connect(self.menuBar.toggleExtractSelected)
+        new_vfs_tree.selectionModel().selectionChanged.connect(
+                                            self.menuBar.toggleExtractSelected)
 
         return new_vfs_tree, all_items_in_tree
 
     def callContextMenu(self, point):
         menu = QMenu()
         if len(self.tree.selectedItems()) == 1 and self.tree.selectedItems()[0].childCount() > 0:
-            extract_action = menu.addAction("&Extract whole directory")
+            extract_action = menu.addAction(self.tr("Extract whole directory"))
         else:
-            extract_action = menu.addAction("&Extract selected")
-        extract_dummy = menu.addAction("Extract a &dry run (won't write files to disk)")
+            extract_action = menu.addAction(self.tr("Extract selected"))
+        extract_dummy = menu.addAction(self.tr("Extract a dry run (won't write files to disk)"))
         menu.addSeparator()
-        unselect_action = menu.addAction("&Clear selection")
+        unselect_action = menu.addAction(self.tr("Clear selection"))
         action = menu.exec_(self.mapToGlobal(point))
         if action == extract_action:
             self.passSelectedFilesToExtractor()
