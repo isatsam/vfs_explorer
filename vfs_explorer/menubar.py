@@ -5,7 +5,7 @@ from PySide6.QtGui import QAction, QDesktopServices
 from PySide6.QtCore import QTime, QTranslator, Qt
 from .extractor import Extractor
 from .__version__ import __version__
-from .config import Global as config
+from .config import Global
 
 
 class MenuBar(QMenuBar):
@@ -118,13 +118,13 @@ class MenuBar(QMenuBar):
             self.unselectSelected.setDisabled(True)
 
     def setLanguage(self, lang_file):
-        config.settings.setValue("user_language", lang_file)
+        Global.settings.setValue("user_language", lang_file)
 
         # Reinstalling the translator will make all next new windows
         # use the new language (incl. the "restart app..." text)
-        config.app.removeTranslator(config.translator)
-        config.translator.load(lang_file, config.path_to_languages)
-        config.app.installTranslator(config.translator)
+        Global.app.removeTranslator(Global.translator)
+        Global.translator.load(lang_file, Global.path_to_languages)
+        Global.app.installTranslator(Global.translator)
         msg = QMessageBox()
         msg.setText(self.tr("Restart app to apply changes"))
         msg.exec()
@@ -248,4 +248,4 @@ Version: {}""").format(__version__)
         return ver
 
     def setCheckingUpdatesOnStart(self, checkbox):
-        config.settings.setValue("checkForUpdates", checkbox.isChecked())
+        Global.settings.setValue("checkForUpdates", checkbox.isChecked())
