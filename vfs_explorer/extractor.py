@@ -1,15 +1,20 @@
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QCheckBox
-from PySide6.QtCore import QFileInfo, QObject, QCoreApplication
+from PySide6.QtCore import QFileInfo, QObject
 from .vfs_tree import VfsTreeItemFile, VfsTreeItemDirectory
 from .config import Global
 import os.path
 
 # A workaround for i18n
-# USAGE: tr("String", context=CONTEXT)
+# USAGE: tr(key="String")
 # This seems to be the only way to both make lupdate pick it up and
 #   provide context
-tr = QCoreApplication.translate
+tr = QObject.tr
 CONTEXT = "Extractor (pop-up prompts)"
+
+# TO-DO:
+    # A better way to handle translations would probably be making Extractor
+    # inherit QObject, then using self.tr() on strings.
+    # Extractor needs to be converted away from being instance-less
 
 class Extractor:
     @classmethod
@@ -126,7 +131,7 @@ class Extractor:
         openDialog.setAcceptMode(QFileDialog.AcceptSave)
         openDialog.setViewMode(QFileDialog.Detail)
         openDialog.setOption(QFileDialog.DontUseNativeDialog)
-        openDialog.setNameFilter(tr("Extract to...", context=CONTEXT))
+        openDialog.setNameFilter(tr("Extract to..."))
 
         selected = openDialog.getExistingDirectory()
         if not os.path.exists(selected):
@@ -138,19 +143,19 @@ class Extractor:
     def overwriteFilePrompt(cls, filename, target_dir_name, are_multiple_files):
         prompt = QMessageBox()
         prompt.setText(tr(f"File {0} exists in folder {1}. \
-                Overwrite it?", context=CONTEXT).format(filename,
+                Overwrite it?").format(filename,
                                                         target_dir_name))
 
         yes_button = prompt.addButton(QMessageBox.StandardButton.Yes)
-        yes_button.setText(tr("Overwrite", context=CONTEXT))
+        yes_button.setText(tr("Overwrite"))
         no_button = prompt.addButton(QMessageBox.StandardButton.No)
-        no_button.setText(tr("Skip overwriting", context=CONTEXT))
+        no_button.setText(tr("Skip overwriting"))
         prompt.setDefaultButton(no_button)
         prompt.addButton(QMessageBox.StandardButton.Cancel)
 
         if are_multiple_files:
             apply_to_all = QCheckBox()
-            apply_to_all.setText(tr('Apply to all', context=CONTEXT))
+            apply_to_all.setText(tr("Apply to all"))
             prompt.setCheckBox(apply_to_all)
         else:
             apply_to_all = None

@@ -5,8 +5,9 @@ from PySide6.QtCore import QLocale, QSettings, QTranslator
 from plaguevfs import VfsArchive, VfsError
 import sys
 import os
-from .ui import UI
 from .config import Global
+from .ui import UI
+from .updater import Updater
 
 
 def start(path_to_archive=None):
@@ -24,6 +25,7 @@ def start(path_to_archive=None):
 
     app = QApplication([])
 
+    # Set language
     translator = QTranslator(app)
     if settings.value("user_language"):
         # If user previously selected a language
@@ -40,11 +42,19 @@ def start(path_to_archive=None):
 
     app.installTranslator(translator)
 
-    mainWindow = UI(archive)
-    app.mainWindow = mainWindow
-
     Global.app = app
     Global.translator = translator
     Global.settings = settings
+
+    if Global.settings.value("check_for_updates") is None:
+        Global.settings.setValue("check_for_updates", False)
+
+    mainWindow = UI(archive)
+    app.mainWindow = mainWindow
+
+    # Check for updates on startup, if this was set by user
+    if Global.settings.value("check_for_updates") == "true":
+        updater = Updater(None, app.mainWindow)
+        updater.checkForUpdates()
 
     sys.exit(app.exec())
