@@ -133,6 +133,7 @@ class MenuBar(QMenuBar):
         menu = QMenu(self.tr("&Preferences"))
         languageSubmenu = QMenu(self.tr("&Language"))
 
+        """ Gather all available language files to display them in the menu """
         languages = []
         for file in os.listdir(os.getcwd()):
             if file.endswith('.qm'):
@@ -140,13 +141,15 @@ class MenuBar(QMenuBar):
 
         for lang in languages:
             this_lang = languageSubmenu.addAction(lang[:lang.find('.qm')])
-            this_lang.triggered.connect(lambda x=None, lang=lang: self.setLanguage(lang))
+            this_lang.triggered.connect(
+                        lambda x=None, lang=lang: self.setLanguage(lang))
         menu.addMenu(languageSubmenu)
 
         menu.addSeparator()
-        shouldCheckForUpdatesCheckbox = menu.addAction(
+        checkForUpdatesOnStart = menu.addAction(
                                     self.tr("&Check for updates on startup"))  # TODO
-        shouldCheckForUpdatesCheckbox.setCheckable(True)
+        checkForUpdatesOnStart.setCheckable(True)
+        checkForUpdatesOnStart.triggered.connect(lambda x=None, checkbox=checkForUpdatesOnStart: self.setCheckingUpdatesOnStart(checkbox))
 
         checkForUpdates = menu.addAction(self.tr("&Check for updates now"))
         checkForUpdates.triggered.connect(self.checkForUpdates)
@@ -189,7 +192,7 @@ Version: {}""").format(__version__)
             In this case, Github's /releases/latest will redirect us
             to wherever we need. If the project ever moves to a service with a different URL setup,
             we will just have rework this bit of code."""
-        SOURCE = "https://github.com/hypnotiger/vfs_explorer/releases/latest"
+        SOURCE = "https://github.com/isatsam/vfs_explorer/releases/latest"
 
         def open_url():
             QDesktopServices.openUrl(SOURCE)
@@ -243,3 +246,6 @@ Version: {}""").format(__version__)
 
         ver = response.url.split("/").pop()
         return ver
+
+    def setCheckingUpdatesOnStart(self, checkbox):
+        config.settings.setValue("checkForUpdates", checkbox.isChecked())
