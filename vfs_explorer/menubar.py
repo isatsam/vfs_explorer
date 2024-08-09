@@ -22,8 +22,12 @@ class MenuBar(QMenuBar):
         self.addAction(self.searchButton)
 
         # Create Extract menu > all the extract options
-        (self.extractMenu, self.extractSelected, self.extractAll, self.extractDryRun,
-         self.unselectSelected) = self.createExtractMenu()
+        self.extractMenu, self.extractSelected, self.unselectSelected = self.createExtractMenu()
+        self.debugOptions = self.createDebugOptions()
+        if Global.settings.value("debug_options") == "true":
+            self.debugOptions.setVisible(True)
+        else:
+            self.debugOptions.setVisible(False)
         self.addMenu(self.extractMenu)
 
         # Create About menu > About VFS Explorer, Check for new versions
@@ -75,15 +79,18 @@ class MenuBar(QMenuBar):
         menu.addSeparator()
 
         extract_all = menu.addAction(self.tr("&Extract this archive"))
-        extract_dry_run = menu.addAction(self.tr("&Extract this archive" +\
-                                    "(dry run - won't write files to disk)"))
 
         extract_selected.triggered.connect(self.extractSelectedFiles)
         extract_all.triggered.connect(self.extractArchive)
-        extract_dry_run.triggered.connect(self.extractDryArchive)
         unselect_action.triggered.connect(self.unselectFiles)
 
-        return menu, extract_selected, extract_all, extract_dry_run, unselect_action
+        return menu, extract_selected, unselect_action
+
+    def createDebugOptions(self):
+        extract_dry_run = self.extractMenu.addAction(self.tr("&Extract this archive" +\
+                                    "(dry run - won't write files to disk)"))
+        extract_dry_run.triggered.connect(self.extractDryArchive)
+        return extract_dry_run
 
     def extractSelectedFiles(self):
         Extractor.extractSelectedFiles(ui_obj=self.parent(), dry_run=False)
@@ -130,16 +137,10 @@ class MenuBar(QMenuBar):
         msg.exec()
 
     def createAboutMenu(self):
-        updatesOnStartChecked = Global.settings.value("check_for_updates")
-        if updatesOnStartChecked == "true":
-            updatesOnStartChecked = True
-        else:
-            updatesOnStartChecked = False
-
         menu = QMenu(self.tr("&Preferences"))
         languageSubmenu = QMenu(self.tr("&Language"))
 
-        """ Gather all available language files to display them in the menu """
+        # Gather all available language files to display them in the menu
         languages = []
         for file in os.listdir(os.getcwd()):
             if file.endswith('.qm'):
@@ -155,8 +156,10 @@ class MenuBar(QMenuBar):
         checkForUpdatesOnStart = menu.addAction(
                                     self.tr("&Check for updates on startup"))  # TODO
         checkForUpdatesOnStart.setCheckable(True)
-        checkForUpdatesOnStart.setChecked(updatesOnStartChecked)
-        checkForUpdatesOnStart.triggered.connect(lambda x=None, checkbox=checkForUpdatesOnStart: self.setCheckingUpdatesOnStart(checkbox))
+        checkForUpdatesOnStart.triggered.connect(lambda x=None,
+            checkbox=checkForUpdatesOnStart: self.setUpdatesOnStart(checkbox))
+        if Global.settings.value("check_for_updates") == "true":
+            checkForUpdatesOnStart.setChecked(True)
 
         checkForUpdates = menu.addAction(self.tr("&Check for updates now"))
         checkForUpdates.triggered.connect(self.checkForUpdates)
@@ -165,6 +168,10 @@ class MenuBar(QMenuBar):
         showDebugOptionsCheckbox = menu.addAction(
                                             self.tr("&Show debug options"))  # TODO
         showDebugOptionsCheckbox.setCheckable(True)
+        showDebugOptionsCheckbox.triggered.connect(lambda x=None,
+            checkbox=showDebugOptionsCheckbox: self.setDebugOptions(checkbox))
+        if Global.settings.value("debug_options") == "true":
+            showDebugOptionsCheckbox.setChecked(True)
 
         menu.addSeparator()
         about = menu.addAction(self.tr("&About VFS Explorer"))
@@ -188,9 +195,23 @@ Version: {}""").format(__version__)
         updater = Updater(self, self.parent())
         updater.checkForUpdates()
 
-    def setCheckingUpdatesOnStart(self, checkbox):
-        Global.settings.setValue("check_for_updates", checkbox.isChecked())
+    def setUpdatesOnStart(self, checkbox):
+        checkbox = checkbox.isChecked()
+        if checkbox:
+            Global.settings.setValue("check_for_updates", "true")
+        else:
+            Global.settings.setValue("check_for_updates", "false")
 
+    def setDebugOptions(self, checkbox):
+        checked = checkbox.isChecked()
+        if checked:
+            Global.settings.setValue("debug_options", "true")
+            if not self.debugOptions.isVisible():
+                self.debugOptions.setVisible(True)
+        else:
+            Global.settings.setValue("debug_options", "false")
+            if self.debugOptions.isVisible():
+                self.debugOptions.setVisible(False)
 
     def openGithub(self):
         url = "https://github.com/isatsam/vfs_explorer"

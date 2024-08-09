@@ -2,6 +2,7 @@ from plaguevfs import VfsArchive
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu)
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtCore import Qt
+from .config import Global
 from .extractor import Extractor
 from .vfs_tree import VfsTree
 from .menubar import MenuBar
@@ -148,7 +149,12 @@ class UI(QMainWindow):
             extract_action = menu.addAction(self.tr("Extract whole directory"))
         else:
             extract_action = menu.addAction(self.tr("Extract selected"))
-        extract_dummy = menu.addAction(self.tr("Extract a dry run (won't write files to disk)"))
+
+        if Global.settings.value("debug_options") == "true":
+            extract_dummy = menu.addAction(self.tr("Extract a dry run (won't write files to disk)"))
+        else:
+            extract_dummy = "undefined"
+
         menu.addSeparator()
         unselect_action = menu.addAction(self.tr("Clear selection"))
         action = menu.exec_(self.mapToGlobal(point))
