@@ -46,8 +46,11 @@ def start(path_to_archive=None):
     Global.translator = translator
     Global.settings = settings
 
+    # default values
     if Global.settings.value("check_for_updates") is None:
-        Global.settings.setValue("check_for_updates", False)
+        Global.settings.setValue("check_for_updates", True)
+    if Global.settings.value("debug_options") is None:
+        Global.settings.setValue("debug_options", False)
 
     mainWindow = UI(archive)
     app.mainWindow = mainWindow
