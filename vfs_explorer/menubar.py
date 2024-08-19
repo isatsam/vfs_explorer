@@ -17,7 +17,7 @@ class MenuBar(QMenuBar):
         self.addMenu(self.fileMenu)
 
         # Create Search button (shows the search bar and focuses on it)
-        self.searchButton = QAction(self.tr("Search"), self)
+        self.searchButton = QAction(self.tr("Filter"), self)
         self.searchButton.triggered.connect(self.showSearchBar)
         self.addAction(self.searchButton)
 
@@ -64,10 +64,10 @@ class MenuBar(QMenuBar):
         elif bar_zone.isHidden():
             bar_zone.show()
             bar.setFocus()
-            self.searchButton.setText(self.tr("Hide search"))
+            self.searchButton.setText(self.tr("Hide filter"))
         else:
             bar_zone.hide()
-            self.searchButton.setText(self.tr("Search"))
+            self.searchButton.setText(self.tr("Filter"))
 
     def createExtractMenu(self):
         menu = QMenu(self.tr("&Extract..."))

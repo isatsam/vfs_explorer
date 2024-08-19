@@ -27,7 +27,6 @@ class UI(QMainWindow):
         self.addToolBar(self.searchToolBar)
 
         # Create Search keyboard shortcut (shows the search bar and focuses on it)
-        # FIXME: For whichever reason the search bar won't open more than once per session
         self.searchShortcut = QShortcut(QKeySequence("Ctrl+F"), self)
         self.searchShortcut.activated.connect(self.menuBar.showSearchBar)
 
