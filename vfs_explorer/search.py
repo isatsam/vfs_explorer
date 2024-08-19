@@ -10,7 +10,8 @@ class Search(QLineEdit):
         super().__init__()
 
         self.mode = mode
-        self.modes = ["contains", "starts with", "regex"]
+        self.modes = [self.tr("Contains"), self.tr("Starts with"),
+                        self.tr("Regex")]
 
         self.setPlaceholderText(self.tr("Enter filename..."))
         self.textChanged.connect(self.showSearchResults)
@@ -27,15 +28,15 @@ class Search(QLineEdit):
 
         # The following search could probably be optimised but it is also
         # already fairly fast, so...
-        if self.mode == "contains":
+        if self.mode == "Contains":
             for item in self.parent.treeItems:
                 if query in item.text(0).lower():
                     found.append(item)
-        elif self.mode == "starts with":
+        elif self.mode == "Starts with":
             for item in self.parent.treeItems:
                 if item.text(0).lower()[:len(query)] == query:
                     found.append(item)
-        elif self.mode == "regex":
+        elif self.mode == "Regex":
             query = "(" + query + ")"
             for item in self.parent.treeItems:
                 try:
@@ -66,7 +67,7 @@ class SearchWidget(QToolBar):
         buttons_layout = QHBoxLayout()
         buttons_layout.setContentsMargins(0, 0, 0, 0)
         for mode in self.searchBar.modes:
-            new_button = QRadioButton(mode.capitalize(), self)
+            new_button = QRadioButton(mode, self)
             new_button.clicked.connect(lambda x=None,
                 name=mode: self.changeSearchMode(name))
             if mode == "contains":
