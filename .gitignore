@@ -2,6 +2,7 @@
 archives/
 __pycache__/
 venv/
+.venv/
 /build/
 /dist/
 /wineprefix/
