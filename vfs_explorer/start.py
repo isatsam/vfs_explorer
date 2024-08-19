@@ -27,16 +27,17 @@ def start(path_to_archive=None):
 
     # Set language
     translator = QTranslator(app)
+    LANG_PATH = Global.path_to_languages
     if settings.value("user_language"):
         # If user previously selected a language
-        translator.load(f'{settings.value("user_language")}.qm', os.getcwd())
-    elif os.path.isfile(os.path.join(f'{QLocale.system().language().name}.qm',
-                                                                os.getcwd())):
+        translator.load(f'{settings.value("user_language")}.qm', LANG_PATH)
+    elif os.path.isfile(os.path.join(LANG_PATH,
+            f'{QLocale.system().language().name}.qm')):
         # If a translation corresponding to user's locale is included
-        translator.load(f'{QLocale.system().language().name}.qm.', os.getcwd())
+        translator.load(f'{QLocale.system().language().name}.qm', os.getcwd())
     else:
         # Fall back to default language
-        translator.load('English.qm', os.getcwd())
+        translator.load('English.qm', LANG_PATH)
     # Additionally, if en.qm is missing, it will just show "non-translated"
     # strings, which are kind of in English anyways.
 

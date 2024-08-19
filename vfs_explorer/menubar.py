@@ -142,7 +142,7 @@ class MenuBar(QMenuBar):
 
         # Gather all available language files to display them in the menu
         languages = []
-        for file in os.listdir(os.getcwd()):
+        for file in os.listdir(Global.path_to_languages):
             if file.endswith('.qm'):
                 languages.append(file)
 
