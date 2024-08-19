@@ -1,5 +1,5 @@
-from plaguevfs import VfsArchive
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu)
+from plaguevfs import VfsArchive, VfsError
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QMenu, QMessageBox)
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtCore import Qt
 from .config import Global
@@ -74,6 +74,11 @@ class UI(QMainWindow):
             self.tree, self.treeItems = self.createTreeView(self.archive)
         except IndexError:
             pass
+        except VfsError as e:
+            # Catch any errors thrown by plaguevfs
+            msg = QMessageBox(text=
+                    self.tr("Error opening file: \n{0}").format(e), parent=self)
+            msg.exec()
         except Exception as e:
             print(e)
 

@@ -4,28 +4,28 @@
 <context>
     <name></name>
     <message>
-        <location filename="vfs_explorer/extractor.py" line="134"/>
+        <location filename="../extractor.py" line="134"/>
         <source>Extract to...</source>
         <translation>Распаковать в...</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/extractor.py" line="146"/>
+        <location filename="../extractor.py" line="146"/>
         <source>File {0} exists in folder {1}. 
                 Overwrite it?</source>
         <translation>Файл {0} Существует в папке {1}. Перезаписать его?</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/extractor.py" line="150"/>
+        <location filename="../extractor.py" line="150"/>
         <source>Overwrite</source>
         <translation>Перезаписать</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/extractor.py" line="152"/>
+        <location filename="../extractor.py" line="152"/>
         <source>Skip overwriting</source>
         <translation>Не перезаписывать</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/extractor.py" line="158"/>
+        <location filename="../extractor.py" line="158"/>
         <source>Apply to all</source>
         <translation>Применить ко всему</translation>
     </message>
@@ -61,17 +61,17 @@
         <translation type="vanished">Поиск</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="40"/>
+        <location filename="../menubar.py" line="40"/>
         <source>&amp;File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="41"/>
+        <location filename="../menubar.py" line="41"/>
         <source>&amp;Open...</source>
         <translation>Открыть...</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="42"/>
+        <location filename="../menubar.py" line="42"/>
         <source>&amp;Close archive</source>
         <translation>Закрыть архив</translation>
     </message>
@@ -80,78 +80,78 @@
         <translation type="vanished">Спрятать поиск</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="20"/>
-        <location filename="vfs_explorer/menubar.py" line="70"/>
+        <location filename="../menubar.py" line="20"/>
+        <location filename="../menubar.py" line="70"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="67"/>
+        <location filename="../menubar.py" line="67"/>
         <source>Hide filter</source>
         <translation>Спрятать фильтр</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="73"/>
+        <location filename="../menubar.py" line="73"/>
         <source>&amp;Extract...</source>
         <translation>&amp;Извлечь...</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="74"/>
+        <location filename="../menubar.py" line="74"/>
         <source>&amp;Extract selected</source>
         <translation>Извлечь выделенные файлы</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="76"/>
+        <location filename="../menubar.py" line="76"/>
         <source>&amp;Clear selection</source>
         <translation>Очистить выделение</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="81"/>
+        <location filename="../menubar.py" line="81"/>
         <source>&amp;Extract this archive</source>
         <translation>Распаковать весь архив</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="91"/>
+        <location filename="../menubar.py" line="91"/>
         <source>&amp;Extract this archive(dry run - won&apos;t write files to disk)</source>
         <translation>Распаковать этот архив (для разработчиков - не запишет файлы на диск)</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="136"/>
+        <location filename="../menubar.py" line="136"/>
         <source>Restart app to apply changes</source>
         <translation>Перезапустите приложение, чтобы применить изменения</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="140"/>
+        <location filename="../menubar.py" line="140"/>
         <source>&amp;Preferences</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="141"/>
+        <location filename="../menubar.py" line="141"/>
         <source>&amp;Language</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="157"/>
+        <location filename="../menubar.py" line="157"/>
         <source>&amp;Check for updates on startup</source>
         <translation>Проверять обновления при запуске приложения</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="164"/>
+        <location filename="../menubar.py" line="164"/>
         <source>&amp;Check for updates now</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="169"/>
+        <location filename="../menubar.py" line="169"/>
         <source>&amp;Show debug options</source>
         <translation>Показать варианты для разработчиков</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="177"/>
+        <location filename="../menubar.py" line="177"/>
         <source>&amp;About VFS Explorer</source>
         <translation>О VFS Explorer</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="187"/>
+        <location filename="../menubar.py" line="187"/>
         <source>VFS Explorer is a program for viewing and extracting the contents of VFS archives, such as those found in some of the games by Ice-Pick Lodge.
 VFS Explorer is licensed under GNU General Public License v3.0, a copy of which is included.
 Version: {}</source>
@@ -160,7 +160,7 @@ VFS Explorer распостраняется по свободной лиценз
 Версия: {}</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="179"/>
+        <location filename="../menubar.py" line="179"/>
         <source>View on GitHub</source>
         <translation>Страница на Github</translation>
     </message>
@@ -176,7 +176,7 @@ Version: {0}</source>
         <translation type="vanished">VFS Explorer - программа для просмотра и извлечения содержимого архивов типа VFS, используемых в некоторых играх студии Ice-Pick Lodge.&lt;br&gt;VFS Explorer распостраняется по лицензии GNU General Public License v3.0, копия которой прилагается.&lt;br&gt;Сайт:&lt;a href=&quot;{0}&quot;&gt;{0}&lt;/a&gt;&lt;br&gt;&lt;br&gt;Версия приложения: {1}</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/menubar.py" line="191"/>
+        <location filename="../menubar.py" line="191"/>
         <source>About VFS Explorer</source>
         <translation>О VFS Explorer</translation>
     </message>
@@ -212,22 +212,22 @@ Version: {0}</source>
         <translation type="vanished">Поиск</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/search.py" line="13"/>
+        <location filename="../search.py" line="13"/>
         <source>Contains</source>
         <translation>Содержит</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/search.py" line="13"/>
+        <location filename="../search.py" line="13"/>
         <source>Starts with</source>
         <translation>Начинается с</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/search.py" line="16"/>
+        <location filename="../search.py" line="16"/>
         <source>Regex</source>
         <translation>Регулярные выражения</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/search.py" line="16"/>
+        <location filename="../search.py" line="16"/>
         <source>Enter filename...</source>
         <translation>Введите название файла...</translation>
     </message>
@@ -235,7 +235,7 @@ Version: {0}</source>
 <context>
     <name>StatusBar</name>
     <message>
-        <location filename="vfs_explorer/status.py" line="16"/>
+        <location filename="../status.py" line="16"/>
         <source>Extracted to {0}: </source>
         <translation>Извлечено в {0}</translation>
     </message>
@@ -243,37 +243,44 @@ Version: {0}</source>
 <context>
     <name>UI</name>
     <message>
-        <location filename="vfs_explorer/ui.py" line="69"/>
+        <location filename="../ui.py" line="69"/>
         <source>VFS archives (*.vfs)</source>
         <translation>Архивы VFS (*.vfs)</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/ui.py" line="87"/>
+        <location filename="../ui.py" line="80"/>
+        <source>Error opening file: 
+{0}</source>
+        <translation>Ошибка при открытии файла:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../ui.py" line="92"/>
         <source>Open archive</source>
         <translation>Открыть архив</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/ui.py" line="137"/>
+        <location filename="../ui.py" line="142"/>
         <source>Opened {0} containing {1} files</source>
         <translation>Открыт {0}, содержащий {1} файлов</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/ui.py" line="148"/>
+        <location filename="../ui.py" line="153"/>
         <source>Extract whole directory</source>
         <translation>Извлечь всю папку</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/ui.py" line="150"/>
+        <location filename="../ui.py" line="155"/>
         <source>Extract selected</source>
         <translation>Извлечь выделенное</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/ui.py" line="153"/>
+        <location filename="../ui.py" line="158"/>
         <source>Extract a dry run (won&apos;t write files to disk)</source>
         <translation>Извлечь выделенное (для разработчиков - не запишет файлы на диск)</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/ui.py" line="158"/>
+        <location filename="../ui.py" line="163"/>
         <source>Clear selection</source>
         <translation>Очистить выделение</translation>
     </message>
@@ -281,32 +288,32 @@ Version: {0}</source>
 <context>
     <name>Updater</name>
     <message>
-        <location filename="vfs_explorer/updater.py" line="30"/>
+        <location filename="../updater.py" line="30"/>
         <source>Checking for new versions...</source>
         <translation>Поиск обновлений...</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/updater.py" line="44"/>
+        <location filename="../updater.py" line="44"/>
         <source>Update VFS Explorer</source>
         <translation>Обновите VFS Explorer</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/updater.py" line="49"/>
+        <location filename="../updater.py" line="49"/>
         <source>You&apos;re using version {0}, but version {1} is available.&lt;br&gt;&lt;br&gt;</source>
         <translation>Вы используете версию {0}. Доступно обновление {1}.&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/updater.py" line="52"/>
+        <location filename="../updater.py" line="52"/>
         <source>Get it from Github</source>
         <translation>Скачать с Github</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/updater.py" line="64"/>
+        <location filename="../updater.py" line="64"/>
         <source>No new versions available.</source>
         <translation>Нет доступных обновлений.</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/updater.py" line="74"/>
+        <location filename="../updater.py" line="74"/>
         <source>Error {0}. If there&apos;s an Internet connection,please manually check for a new version.</source>
         <translation>Ошибка {0}. При наличии соединения с Интернетом, пожалуйста, проверьте наличие новых версий вручную.</translation>
     </message>
@@ -314,17 +321,17 @@ Version: {0}</source>
 <context>
     <name>VfsTree</name>
     <message>
-        <location filename="vfs_explorer/vfs_tree.py" line="49"/>
+        <location filename="../vfs_tree.py" line="49"/>
         <source>Filename</source>
         <translation>Название файла</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/vfs_tree.py" line="49"/>
+        <location filename="../vfs_tree.py" line="49"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="vfs_explorer/vfs_tree.py" line="51"/>
+        <location filename="../vfs_tree.py" line="51"/>
         <source>Last modified</source>
         <translation>Последнее изменение</translation>
     </message>
