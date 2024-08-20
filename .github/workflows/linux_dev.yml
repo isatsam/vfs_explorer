@@ -1,5 +1,7 @@
 name: Linux Development Builds
 on: [push]
+permissions:
+  contents: write
 jobs:
   pyinstaller-build:
     runs-on: ubuntu-latest
