@@ -41,5 +41,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='VFS Explorer',
+    name='vfs_explorer',
 )
