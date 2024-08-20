@@ -1,5 +1,4 @@
 # -*- mode: python ; coding: utf-8 -*-
-from ..version import version
 
 
 a = Analysis(
