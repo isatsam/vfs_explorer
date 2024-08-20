@@ -1,4 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
+from ..version import version
+
 
 a = Analysis(
     ['../../vfs_explorer.py'],
@@ -43,4 +45,14 @@ coll = COLLECT(
     upx=True,
     upx_exclude=[],
     name='vfs_explorer',
+)
+
+app = BUNDLE(exe,
+         name='VFS Explorer.app',
+         icon="icon.icns",
+         bundle_identifier=None,
+        info_plist={
+            'NSPrincipalClass': 'NSApplication',
+            'NSAppleScriptEnabled': False,
+            },
 )

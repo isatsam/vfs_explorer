@@ -9,6 +9,6 @@ jobs:
         with:
           python_ver: "3.12"
           pyinstaller_ver: "==6.10.0"
-          spec: "vfs_explorer/build/build.spec"
+          spec: "vfs_explorer/build/build_macos.spec"
           requirements: "requirements.txt"
           upload_exe_with_name: "vfs_explorer_windows_dev"
