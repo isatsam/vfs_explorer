@@ -1,8 +1,8 @@
-name: Windows Development Builds
+name: MacOS Development Builds
 on: [push]
 jobs:
   pyinstaller-build:
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
       - name: Create Executable
         uses: sayyid5416/pyinstaller@v1
