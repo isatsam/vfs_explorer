@@ -1,4 +1,4 @@
-name: Nightly Builds
+name: Linux Development Builds
 on: [push]
 jobs:
   pyinstaller-build:
@@ -11,4 +11,4 @@ jobs:
           pyinstaller_ver: "==6.10.0"
           spec: "vfs_explorer/build/build.spec"
           requirements: "requirements.txt"
-          upload_exe_with_name: "vfs_explorer_linux"
+          upload_exe_with_name: "vfs_explorer_linux_dev"
