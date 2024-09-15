@@ -8,5 +8,4 @@ class Global:
     translator = None
     settings = None
     softRestart = None
-    path_to_languages = os.path.join(os.getcwd(), "vfs_explorer",
-                            "languages")
+    languages = None

@@ -130,7 +130,7 @@ class MenuBar(QMenuBar):
         # Reinstalling the translator will make all next new windows
         # use the new language (incl. the "restart app..." text)
         Global.app.removeTranslator(Global.translator)
-        Global.translator.load(lang_file, Global.path_to_languages)
+        Global.translator.load(lang_file, Global.languages)
         Global.app.installTranslator(Global.translator)
         msg = QMessageBox()
         msg.setText(self.tr("Restart app to apply changes"))
@@ -142,7 +142,7 @@ class MenuBar(QMenuBar):
 
         # Gather all available language files to display them in the menu
         languages = []
-        for file in os.listdir(Global.path_to_languages):
+        for file in os.listdir(Global.languages):
             if file.endswith('.qm'):
                 languages.append(file)
 
