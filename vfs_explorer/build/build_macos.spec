@@ -34,7 +34,7 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     contents_directory='vfs_explorer',
-    icon="icon.ico"
+    icon="icon.icns"
 )
 coll = COLLECT(
     exe,
