@@ -43,7 +43,7 @@ please run: `python languages/detect.py` and rename your `.ts` and `.qm` files t
 
 Check that the new language is also present in the list in "Preferences" > "Languages", then manually test the app to ensure everything looks and reads right.
 
-Please submit your translation as a separate PR from any code changes you might add.
+Please submit your translation as a separate PR from any code changes you might add. Consider also translating the [README.md](./README.md) file.
 
 # Github workflows
 We use Actions to generate dev builds of VFS Explorer.

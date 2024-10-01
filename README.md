@@ -1,4 +1,4 @@
-[ **English** ] [ (Русский)[./README_ru.md] ]
+[ **English** ] [ [Русский](./README_ru.md) ]
 
 # VFS Explorer
 A graphic tool for previewing and extracting files stored in VFS archives, such as those used in Pathologic 1.
