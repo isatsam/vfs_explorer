@@ -4,7 +4,8 @@
 A graphic tool for previewing and extracting files stored in VFS archives, such as those used in Pathologic 1.
 
 ![Screenshot of VFS Explorer](./screenshot_1.0.png)
-[![Linux](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml)[![Windows](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml
+[![Linux](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml)
+ [![Windows](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml
 
 # Features
 - List contents of a VFS archive, with all subdirectories
