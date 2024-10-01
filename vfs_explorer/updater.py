@@ -1,4 +1,3 @@
-from enum import CONFORM
 import requests
 from PySide6.QtWidgets import QAbstractButton, QMenu, QMenuBar, QMessageBox, QDialog, QLabel, QStyle, QVBoxLayout, QPushButton
 from PySide6.QtGui import QAction, QDesktopServices

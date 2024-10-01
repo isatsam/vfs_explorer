@@ -60,7 +60,7 @@ def start(path_to_archive=None):
 
     # default values
     if Global.settings.value("check_for_updates") is None:
-        Global.settings.setValue("check_for_updates", True)
+        Global.settings.setValue("check_for_updates", False)
     if Global.settings.value("debug_options") is None:
         Global.settings.setValue("debug_options", False)
 
