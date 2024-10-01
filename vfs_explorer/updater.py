@@ -11,7 +11,7 @@ class Updater(QObject):
         self.parent_window = parent_window
         self.main_window = main_window
 
-    def checkForUpdates(self):
+    def checkForUpdates(self, source="startup"):
         """
         Initializes the check (via requests library) and creates all the
         dialogues needed to tell the use about whether there's any updates available.
@@ -32,6 +32,7 @@ class Updater(QObject):
 
         try:
             new_version = self.getLatestVersion(SOURCE)
+            print(f"Our version: {__version__}, new version: {new_version}")
         except requests.ConnectionError as error:
             self.main_window.statusBar.showMessage("")
             text = f"{error}"
@@ -58,12 +59,19 @@ class Updater(QObject):
             update_dialog.adjustSize()
 
             update_dialog.exec()
+            print(f"Asking user to update...")
         else:
-            self.main_window.statusBar.showMessage("")
-            text = self.tr("No new versions available.")
-            msg = QMessageBox(text=text)
-            msg.setWindowTitle("VFS Explorer")
-            msg.exec()
+            if source != "startup":
+                self.main_window.statusBar.showMessage("")
+                text = self.tr("No new versions available.")
+                msg = QMessageBox(text=text)
+                msg.setWindowTitle("VFS Explorer")
+                msg.exec()
+            else:
+                self.main_window.statusBar.showMessage(self.tr(""))
+                # TODO, for whenever we regenerate the language files next time:
+                # self.main_window.statusBar.showMessage(self.tr("No new versions available."))
+
 
     def getLatestVersion(self, check_url):
         response = requests.get(check_url)

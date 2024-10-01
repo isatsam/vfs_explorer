@@ -193,7 +193,7 @@ Version: {}""").format(__version__)
 
     def checkForUpdates(self):
         updater = Updater(self, self.parent())
-        updater.checkForUpdates()
+        updater.checkForUpdates(source="menu")
 
     def setUpdatesOnStart(self, checkbox):
         checkbox = checkbox.isChecked()
