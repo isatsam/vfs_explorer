@@ -17,7 +17,7 @@ To generate a binary file for your system, use: `pyinstaller ./build/build.spec`
 
 For developers on Linux trying to generate a Windows binary, Wine can be used for this purpose, and [this tutorial](https://www.makeworld.space/2021/10/linux-wine-pyinstaller.html) by makeworld.space has proven working for VFS Explorer. In short:
 1. Download latest Python release for Windows from python.org
-2. Run the installer through `wine`. Check the "install in PATH" box. You can additionally change Python directory to something more convenient
+2. Run the installer through `wine`. Check the "install in PATH" box, select a customised installation, and check "Install for all users". You can additionally change Python directory to something more convenient; it will be `C:\\Program Files\\Python312`
 3. Use your wine's new Python installation to install requirements through pip, then to run pyinstaller with the provided .spec file (the commands are the same, you just need to specify `wine C:\\path\\to\\python` in the beginning)
 
 We additionally should try to keep (build_macos.spec)[./vfs_explorer/build/build_macos.spec] up-to-date, even though we don't currently use it or provide MacOS builds; this lack of support comes from Apple's draconian fees for the independent developer account, which is mandatory for certifying applications and making them easy to run on any MacOS system. If this is something you believe you can assist the project with, please open an issue.
