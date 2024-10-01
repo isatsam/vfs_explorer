@@ -4,8 +4,6 @@
 Графический инструмент для просмотра и извлечения файлов из архивов формата VFS, используемого в игре "Мор. Утопия".
 
 ![Скриншот программы VFS Explorer](./screenshot_1.0.png)
-[![Linux](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml)
- [![Windows](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml
 
 # Функционал
 - Просмотр содержимого архивов VFS, включая подкаталоги (папки внутри папок)

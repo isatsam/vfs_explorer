@@ -1,3 +1,6 @@
+[![Linux](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/linux_dev.yml)
+ [![Windows](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml/badge.svg)](https://github.com/isatsam/vfs_explorer/actions/workflows/windows_dev.yml)
+
 # Setting up the environment
 VFS Explorer requires `git` and Python 3.12 installed and available in PATH.
 
