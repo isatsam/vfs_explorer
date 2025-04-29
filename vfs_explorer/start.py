@@ -72,4 +72,4 @@ def start(path_to_archive=None):
         updater = Updater(None, app.mainWindow)
         updater.checkForUpdates()
 
-    app.exec()
+    sys.exit(app.exec())
