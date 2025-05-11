@@ -11,6 +11,7 @@ VFS header:
     4 buffer - # of files
 """
 
+HEADER_LEN = 8
 
 class VfsArchive(Filesystem):
     """
@@ -36,12 +37,14 @@ class VfsArchive(Filesystem):
     @staticmethod
     def read_root_header(buffer):
         buffer.seek(4)
-        subdirs = struct.unpack('<i', buffer.read(4))[0]
+        #subdirs = struct.unpack('<i', buffer.read(4))[0]
         files = struct.unpack('<i', buffer.read(4))[0]
-        return [files, subdirs]
+        #return [files, subdirs]
+        return files
 
     def init_root_from_header(self, buffer) -> Directory:
-        num_files, num_subdirs = self.read_root_header(buffer)
-        root = Directory(name=self.name, archive=self, parent=None, num_subdirs=num_subdirs, num_files=num_files,
-                         start=0, header_len=12, contents=buffer)
+        #num_files, num_subdirs = self.read_root_header(buffer)
+        num_files = self.read_root_header(buffer)
+        root = Directory(name=self.name, archive=self, parent=None, num_subdirs=0, num_files=num_files,
+                         start=0, header_len=HEADER_LEN, contents=buffer)
         return root

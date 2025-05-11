@@ -13,12 +13,14 @@ class EmbeddedFile:
         return self.name
 
     def read_self(self, section):
+        print("start:", section.tell())
         filename_len = ord(section.read(1))
         section.read(3)
         filename = section.read(filename_len).decode(self.parent.encoding)
         start = struct.unpack('<i', section.read(4))[0]
         length = struct.unpack('<i', section.read(4))[0]
         end = start+length
+        print(filename_len, filename, length, start, end)
         return [filename, length, start, end]
 
     def extract(self, create_subdir_on_disk=False, out_path=os.getcwd()):
