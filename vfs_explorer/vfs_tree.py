@@ -20,9 +20,6 @@ class VfsTree(QTreeWidget):
             for subdir in directory.subdirs:
                 entry.addChildren(add_dir_to_tree(items_list, subdir))
             for file in directory.files.values():
-                time = file.timestamp
-                time = datetime.fromtimestamp(time).strftime(TIME_FORMAT)
-
                 size = file.length
                 if size > 1000000:
                     size = str(size / 1000000)
@@ -40,14 +37,13 @@ class VfsTree(QTreeWidget):
                 # FIXME: this ridiculous decimal precision
                 size = str(size[:len(size[:size.rfind('.')]) + decimals]) + ' ' + unitname
 
-                child = VfsTreeItemFile([str(file), size, time], file)
+                child = VfsTreeItemFile([str(file), size], file)
                 entry.addChild(child)
             items_list.append(entry)
             return items_list
 
         self.setColumnCount(1)
-        header_labels = [self.tr("Filename"), self.tr("Size"),
-                        self.tr("Last modified")]
+        header_labels = [self.tr("Filename"), self.tr("Size")]
         self.setColumnWidth(0, self.window().size().width() // 2)
         self.setHeaderLabels(header_labels)
         self.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)

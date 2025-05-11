@@ -66,7 +66,7 @@ class UI(QMainWindow):
     def openFromFile(self):
         openDialog = QFileDialog(self)
         openDialog.setFileMode(QFileDialog.ExistingFile)
-        openDialog.setNameFilter(self.tr('VFS archives (*.vfs)'))
+        openDialog.setNameFilter(self.tr('VFS archives (*.spk)'))
         openDialog.exec()
         try:
             selected = openDialog.selectedFiles()[0]
