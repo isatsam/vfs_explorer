@@ -18,8 +18,8 @@ if __name__ == "__main__":
             quit()
 
         if not args.search and not args.extract and not args.extract_all:
-            print(f"{archive.filepath}\nFiles: {archive.num_files}\nSubdirectories: {archive.num_subdirs}")
-            for subdir in archive.subdirs:
+            print(f"{archive.filepath}\nFiles: {archive.root.num_files}\nSubdirectories: {archive.root.num_subdirs}")
+            for subdir in archive.root.subdirs:
                 print(f"Files in subdir \"{subdir.name}\": {subdir.num_files}")
     else:
         print('Can\'t do anything without a VFS archive')
