@@ -26,7 +26,7 @@ class VfsArchive(Filesystem):
     def open(self):
         if os.path.isfile(self.filepath):
             with open(self.filepath, 'rb') as file:
-                if file.read(4) == b'LP1C':
+                if file.read(4) == b'SBPK':
                     return open(self.filepath, 'rb')
                 else:
                     raise VfsError('File is not a VFS archive')
