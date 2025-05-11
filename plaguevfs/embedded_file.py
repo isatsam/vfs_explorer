@@ -14,9 +14,10 @@ class EmbeddedFile:
 
     def read_self(self, section):
         filename_len = ord(section.read(1))
+        section.read(3)
         filename = section.read(filename_len).decode(self.parent.encoding)
-        length = struct.unpack('<i', section.read(4))[0]
         start = struct.unpack('<i', section.read(4))[0]
+        length = struct.unpack('<i', section.read(4))[0]
         end = start+length
         return [filename, length, start, end]
 
