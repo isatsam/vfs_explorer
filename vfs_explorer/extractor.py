@@ -93,7 +93,7 @@ class Extractor:
             target_dir = os.path.join(starter_target_path, path)
             if not os.path.exists(target_dir):
                 if not dry_run:
-                    os.mkdir(target_dir)
+                    os.makedirs(target_dir)
                 print(f"Created directory {target_dir}")
 
             for obj in map_of_directories[path]:

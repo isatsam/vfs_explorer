@@ -12,7 +12,7 @@ class EmbeddedFile:
     def __str__(self):
         return self.name
 
-    def read_self(self, section):
+    def read_self(self, section) -> list[str, int, int, int, int]:
         def to_datetime(filetime: int) -> datetime:
             """
             Converts a Windows filetime number to a Python datetime. The new
@@ -32,8 +32,9 @@ class EmbeddedFile:
 
         filename_len = ord(section.read(1))
         filename = section.read(filename_len).decode(self.parent.encoding)
-        length = struct.unpack('<i', section.read(4))[0]
-        start = struct.unpack('<i', section.read(4))[0]
+        length = struct.unpack('<i', section.read(4))[0] # little-endian int
+        mystery_data = section.read(4)
+        start = struct.unpack('<Q', section.read(8))[0] # little-endian unsigned long long
         end = start+length
         timestamp = struct.unpack('<q', section.read(8))[0]
         timestamp = int(to_datetime(timestamp).timestamp())
@@ -59,7 +60,7 @@ class EmbeddedFile:
                 target_dir = self.parent.name
             out = os.path.join(out_path, target_dir, self.name)
             if not os.path.exists(os.path.join(out_path, target_dir)):
-                os.mkdir(os.path.join(out_path, target_dir))
+                os.makedirs(os.path.join(out_path, target_dir))
         elif out_path:                          # if extract to specified path
             out = os.path.join(out_path, self.name)
         else:                                   # if no new subdir and no path provided
